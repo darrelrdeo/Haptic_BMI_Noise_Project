@@ -19,7 +19,21 @@ void linkSharedData(shared_data& sharedData) {
 // set-up for simulation
 void setup(void) {
     // initialize all elements of p_sharedData structure
-    
+
+    // create timers, PHANTOM device handler
+    // NOTE: only use these constructors once (at beginning of main) to avoid pointer issues
+    p_sharedData->timer = new cPrecisionClock();
+
+	// New handler instances for phantom devices
+    p_sharedData->p_input_Phantom_Handler = new cHapticDeviceHandler();
+	p_sharedData->p_output_Phantom_Handler = new cHapticDeviceHandler();
+
+	// Assign haptic devices to handler for easy reference via pointers
+	p_sharedData->p_input_Phantom_Handler->getDevice(p_sharedData->p_input_Phantom, 0);   // 1st available haptic device
+	p_sharedData->p_output_Phantom_Handler->getDevice(p_sharedData->p_output_Phantom, 1); // 2nd available haptic device
+
+	// Create instance of joystick
+	p_sharedData->p_Joystick = new jsJoystick(0);
 	
 }
 

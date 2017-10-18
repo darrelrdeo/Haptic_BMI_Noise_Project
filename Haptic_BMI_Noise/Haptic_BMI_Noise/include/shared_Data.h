@@ -30,6 +30,9 @@ using namespace std;
 // Experiment States
 #define START_UP	0
 
+// Loop rate parameters
+#define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
+
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
@@ -57,6 +60,17 @@ typedef struct {
 ///////////// shared data structure
 // data to share between all the threads
 typedef struct {
+
+	// Simulation State
+	bool simulationRunning; // selected during setup/initialization
+	bool simulationFinished;// executed by experiment
+
+	// input devices 
+	int input_device;
+
+	// output devices
+	int output_device;
+
 	int blockNum;			// number of current block
 	string blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	int trialNum;			// current trial number
@@ -74,42 +88,52 @@ typedef struct {
 	double cursorVelY;
 	double cursorVelZ;
 
+	// Timers for simulation/experiment
+	cPrecisionClock* timer;
 
-	// device pointers
+	// device handlers and pointers
+	cHapticDeviceHandler* p_input_Phantom_Handler; // Handler for input Phantom device
+	cHapticDeviceHandler* p_output_Phantom_Handler; // Handler for output Phantom device
 	cGenericHapticDevicePtr p_input_Phantom;	// ptr to input phantom device
 	cGenericHapticDevicePtr p_output_Phantom;	// ptr to output phantom device
 	jsJoystick* p_Joystick;						// ptr to joystick device
 
 	// device frequency counter
-	cFrequencyCounter inputPhantomFreqCounter;
-	cFrequencyCounter outputPhantomFreqCounter;
+	cFrequencyCounter phantomFreqCounter;
 	cFrequencyCounter joystickFreqCounter;
 
 	// Input Phantom state
 	double inputPhantomPosX;
 	double inputPhantomPosY;
 	double inputPhantomPosZ;
-	double inputPhantomPosX_OneAgo;
-	double inputPhantomPosY_OneAgo;
-	double inputPhantomPosZ_OneAgo;
 
 	double inputPhantomVelX;
 	double inputPhantomVelY;
 	double inputPhantomVelZ;
+
 	double inputPhantomSwitch;
 
 	// Output Phantom state
 	double outputPhantomPosX;
 	double outputPhantomPosY;
 	double outputPhantomPosZ;
-	double outputPhantomPosX_OneAgo;
-	double outputPhantomPosY_OneAgo;
-	double outputPhantomPosZ_OneAgo;
 
 	double outputPhantomVelX;
 	double outputPhantomVelY;
 	double outputPhantomVelZ;
+
 	double outputPhantomSwitch;
+
+	// Output Phantom desired force output
+	double outputPhantomForce_Desired_X;
+	double outputPhantomForce_Desired_Y;
+	double outputPhantomForce_Desired_Z;
+
+	// Output Phantom current force output
+	double outputPhantomForce_X;
+	double outputPhantomForce_Y;
+	double outputPhantomForce_Z;
+
 
 	// Joystick State
 	double joystickPosX;
@@ -121,15 +145,21 @@ typedef struct {
     FILE* outputFile;              // output file for entire experiment (all blocks/trials)
 
 	// timers to regulate thread loop rates
-	cPrecisionClock m_input_phantomLoopTimer;
-	cPrecisionClock m_output_phantomLoopTimer;
+	cPrecisionClock m_phantomLoopTimer;
 	cPrecisionClock m_joystickLoopTimer;
 	
 	// Time Stamps
-	DWORD inputPhantomLoopTimeStamp;
-	DWORD outputPhantomLoopTimeStamp;
+	DWORD phantomLoopTimeStamp;
 	DWORD joystickLoopTimeStamp;
 	DWORD recordTimeStamp;
+
+	// Loop Rate Stamps (delta Time)
+	DWORD phantomLoopDelta;
+	DWORD joystickLoopDelta;
+
+	// Frequency Counter reported loop frequency in Hz
+	double phantomFreq;
+	double joystickFreq;
 	
 
 } shared_data;

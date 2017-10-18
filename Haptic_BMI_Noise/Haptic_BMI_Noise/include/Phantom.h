@@ -5,10 +5,11 @@
 #include "chai3d.h"
 #include "shared_data.h"
 
-//void initPhantom(void);
-//void linkSharedDataToPhantom(shared_data& sharedData);
-//void updatePhantom(void);
-//void closePhantom(void);
+void initPhantom(void);
+void linkSharedDataToPhantom(shared_data& sharedData);
+void updatePhantom(void);
+void updateCursor(void);
+void closePhantom(void);
 
 
 

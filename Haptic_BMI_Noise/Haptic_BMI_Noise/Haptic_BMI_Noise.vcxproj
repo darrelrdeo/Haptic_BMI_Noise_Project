@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="source\data.cpp" />
     <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Phantom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\data.h" />
@@ -65,7 +66,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>chai3d.lib;freeglut.lib;cbw32.lib;NIDAQmx.lib;Force_Sensor_2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>chai3d.lib;freeglut.lib;cbw32.lib;NIDAQmx.lib;Force_Sensor_2010.lib;js.lib;ul.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
