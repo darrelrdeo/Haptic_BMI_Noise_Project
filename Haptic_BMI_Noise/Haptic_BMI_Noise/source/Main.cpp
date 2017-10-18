@@ -35,8 +35,7 @@ using namespace std;
 //------------------------
 // threads and the data shared between them (NOTE: graphics is threaded separate from the CThread architecture)
 
-cThread* input_phantomThread;
-cThread* output_phantomThread;
+cThread* phantomThread;
 cThread* experimentThread;
 shared_data *sharedData;
 

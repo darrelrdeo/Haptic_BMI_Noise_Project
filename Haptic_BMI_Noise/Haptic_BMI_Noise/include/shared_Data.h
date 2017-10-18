@@ -45,9 +45,64 @@ typedef struct {
 	double d_cursorPosY;	// current cursor y position
 	double d_cursorPosZ;	// current curosr z position
 
-	
+	double d_cursorPosX_OneAgo;
+	double d_cursorPosY_OneAgo;
+	double d_cursorPosZ_OneAgo;
+
+	double d_cursorVelX;
+	double d_cursorVelY;
+	double d_cursorVelZ;
+
+	// Input Phantom state
+	double d_inputPhantomPosX;
+	double d_inputPhantomPosY;
+	double d_inputPhantomPosZ;
+
+	double d_inputPhantomVelX;
+	double d_inputPhantomVelY;
+	double d_inputPhantomVelZ;
+
+	double d_inputPhantomSwitch;
+
+	// Output Phantom state
+	double d_outputPhantomPosX;
+	double d_outputPhantomPosY;
+	double d_outputPhantomPosZ;
+
+	double d_outputPhantomVelX;
+	double d_outputPhantomVelY;
+	double d_outputPhantomVelZ;
+
+	double d_outputPhantomSwitch;
+
+	// Output Phantom desired force output
+	double d_outputPhantomForce_Desired_X;
+	double d_outputPhantomForce_Desired_Y;
+	double d_outputPhantomForce_Desired_Z;
+
+	// Output Phantom current force output
+	double d_outputPhantomForce_X;
+	double d_outputPhantomForce_Y;
+	double d_outputPhantomForce_Z;
 
 
+	// Joystick State
+	double d_joystickPosX;
+	double d_joystickPosY;
+	double d_joystickSwitch;
+
+	// Time Stamps
+	DWORD d_phantomLoopTimeStamp;
+	DWORD d_joystickLoopTimeStamp;
+	DWORD d_recordTimeStamp;
+
+	// Loop Rate Stamps (delta Time)
+	DWORD d_phantomLoopDelta;
+	DWORD d_joystickLoopDelta;
+
+	// Frequency Counter reported loop frequency in Hz
+	double d_phantomFreq;
+	double d_joystickFreq;
 
 } save_data; 
 
