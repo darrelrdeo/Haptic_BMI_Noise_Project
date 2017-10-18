@@ -159,9 +159,8 @@ void updateCursor(void) {
 
 // safely close the PHANTOM devices
 void closePhantom(void) {
-    
-    p_sharedData->p_input_Phantom->close();
-    p_sharedData->p_output_Phantom->close();
+    if (p_sharedData->input_device == INPUT_PHANTOM) p_sharedData->p_input_Phantom->close();
+	if (p_sharedData->output_device == OUTPUT_PHANTOM) p_sharedData->p_output_Phantom->close();
 }
 
 

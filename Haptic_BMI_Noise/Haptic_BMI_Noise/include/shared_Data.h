@@ -26,6 +26,7 @@ using namespace std;
 
 // Output devcies
 #define OUTPUT_PHANTOM		1
+#define OUTPUT_DELTA		2
 
 // Experiment States
 #define START_UP	0
@@ -33,6 +34,8 @@ using namespace std;
 // Loop rate parameters
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
 
+// Graphics
+#define CURSOR_SIZE 0.008  // cursor radius
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
@@ -115,6 +118,8 @@ typedef struct {
 ///////////// shared data structure
 // data to share between all the threads
 typedef struct {
+	// operation mode
+	int opMode;
 
 	// Simulation State
 	bool simulationRunning; // selected during setup/initialization
@@ -129,6 +134,13 @@ typedef struct {
 	int blockNum;			// number of current block
 	string blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	int trialNum;			// current trial number
+
+	// graphics
+	string message;
+
+	// state machine states
+	int experimentStateNumber;
+	string experimentStateName;
 	
 	// cursor parameters
 	double cursorPosX;	// current cursor x position

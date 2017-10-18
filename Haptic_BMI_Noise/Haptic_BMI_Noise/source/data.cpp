@@ -2,7 +2,7 @@
 #include "data.h"
 using namespace std;
 
-//#define RECORD_HAPTIC_LOOP_RATE
+static char response;   // Y/N response to set-up questions
 static save_data temp;  // for temporarily holding one time step of data (that is to be saved)
 
 static shared_data* p_sharedData;  // structure for sharing data between threads
@@ -27,6 +27,13 @@ void setup(void) {
 
 	// output devices
 	p_sharedData->output_device = 0;
+
+	// state initializations
+	p_sharedData->experimentStateName = "";
+	p_sharedData->experimentStateNumber = 0;
+
+	// graphics
+	p_sharedData->message = "";
 
 	p_sharedData->blockNum = 0;			// number of current block
 	p_sharedData->blockName = "";		// name of the current block (i.e. Haptics_Block, Vision_Block)
@@ -111,7 +118,39 @@ void setup(void) {
 
 	// Create instance of joystick
 	p_sharedData->p_Joystick = new jsJoystick(0);
+
+	// ask for operating mode (defaults to demo)
+    printf("\nIs this going to be an Experiment(E) or Demo(D)?\n");
+    cin >> response;
+    if (response == 'e' || response == 'E') {
+
+		// Ask for type of input 
+		printf("\nWhat is your input device?");
+		printf("\n(1) PHANTOM, (2) JOYSTICK\n");
+        cin >> response;
+		if (response == '1') p_sharedData->input_device = INPUT_PHANTOM;
+		else if (response == '2') p_sharedData->input_device = INPUT_JOYSTICK;
 	
+
+		// ask for type of output device
+		printf("\nWhat is your output device?");
+		printf("\n(1) PHANTOM, (2) DELTA\n");
+		cin >> response;
+		if (response == '1') p_sharedData->output_device = OUTPUT_PHANTOM;
+		else if (response == '2') p_sharedData->output_device = OUTPUT_DELTA;
+
+		// set operation mode to experiment
+        p_sharedData->opMode = EXPERIMENT;
+    }
+    // if demo, ask for input device 
+    else if (response == 'd' || response == 'D'){
+		p_sharedData->opMode = DEMO;
+        printf("\nWhat is your input device?");
+        printf("\n(1) PHANTOM, (2) JOYSTICK\n");
+        cin >> response;
+        if (response == '1') p_sharedData->input_device = INPUT_PHANTOM;
+        else if (response == '2') p_sharedData->input_device = INPUT_JOYSTICK;
+	}	
 }
 
 // save one time step of data to vector for current trial
