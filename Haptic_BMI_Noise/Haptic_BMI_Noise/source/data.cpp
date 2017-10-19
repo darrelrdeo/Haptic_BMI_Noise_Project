@@ -94,15 +94,21 @@ void setup(void) {
 	// Time Stamps
 	p_sharedData->phantomLoopTimeStamp = 0;
 	p_sharedData->joystickLoopTimeStamp = 0;
+	p_sharedData->experimentLoopTimeStamp = 0;
 	p_sharedData->recordTimeStamp = 0;
 
 	// Loop Rate Stamps (delta Time)
 	p_sharedData->phantomLoopDelta = 0;
 	p_sharedData->joystickLoopDelta = 0;
+	p_sharedData->experimentLoopDelta = 0;
 
 	// Frequency Counter reported loop frequency in Hz
 	p_sharedData->phantomFreq = 0;
 	p_sharedData->joystickFreq = 0;
+	p_sharedData->experimentFreq = 0;
+
+	// elapsed time 
+	p_sharedData->timeElapsed = 0;
 
     // create timers, PHANTOM device handler
     // NOTE: only use these constructors once (at beginning of main) to avoid pointer issues
@@ -221,15 +227,21 @@ void saveOneTimeStep(void) {
 	// Time Stamps
 	temp.d_phantomLoopTimeStamp = p_sharedData->phantomLoopTimeStamp;
 	temp.d_joystickLoopTimeStamp = p_sharedData->joystickLoopTimeStamp;
+	temp.d_experimentLoopTimeStamp = p_sharedData->experimentLoopTimeStamp;
 	temp.d_recordTimeStamp = p_sharedData->recordTimeStamp;
 
 	// Loop Rate Stamps (delta Time)
 	temp.d_phantomLoopDelta = p_sharedData->phantomLoopDelta;
 	temp.d_joystickLoopDelta = p_sharedData->joystickLoopDelta;
+	temp.d_experimentLoopDelta = p_sharedData->experimentLoopDelta;
 
 	// Frequency Counter reported loop frequency in Hz
 	temp.d_phantomFreq = p_sharedData->phantomFreq;
 	temp.d_joystickFreq = p_sharedData->joystickFreq;
+	temp.d_experimentFreq = p_sharedData->experimentFreq;
+
+	// trial elapsed time
+	temp.d_timeElapsed = p_sharedData->timeElapsed;
    
     // push into vector for current trial
 	p_sharedData->trialData.push_back(temp);
@@ -241,7 +253,7 @@ void recordTrial(void) {
     
     // iterate over vector, writing one time step at a time
     for (vector<save_data>::iterator it = p_sharedData->trialData.begin() ; it != p_sharedData->trialData.end(); ++it) {
-        fprintf(p_sharedData->outputFile,"%d %s %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %f %f",
+        fprintf(p_sharedData->outputFile,"%d %s %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %lu %lu %f %f %f %f",
                 	it->d_blockNum,
 					it->d_blockName,
 					it->d_trialNum,
@@ -279,11 +291,15 @@ void recordTrial(void) {
 					it->d_joystickSwitch,
 					it->d_phantomLoopTimeStamp,
 					it->d_joystickLoopTimeStamp,
+					it->d_experimentLoopTimeStamp,
 					it->d_recordTimeStamp,
 					it->d_phantomLoopDelta,
 					it->d_joystickLoopDelta,
+					it->d_experimentLoopDelta,
 					it->d_phantomFreq,
-					it->d_joystickFreq
+					it->d_joystickFreq,
+					it->d_experimentFreq,
+					it->d_timeElapsed
 				);
 
 		// print to file

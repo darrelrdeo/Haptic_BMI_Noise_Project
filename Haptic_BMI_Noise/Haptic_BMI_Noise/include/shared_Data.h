@@ -30,6 +30,11 @@ using namespace std;
 
 // Experiment States
 #define START_UP	0
+#define PRE_BLOCK   5
+#define RECORD		2
+#define RELAX		3
+#define BREAK		4
+#define THANKS		6
 
 // Loop rate parameters
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
@@ -97,15 +102,20 @@ typedef struct {
 	// Time Stamps
 	DWORD d_phantomLoopTimeStamp;
 	DWORD d_joystickLoopTimeStamp;
+	DWORD d_experimentLoopTimeStamp;
 	DWORD d_recordTimeStamp;
 
 	// Loop Rate Stamps (delta Time)
 	DWORD d_phantomLoopDelta;
 	DWORD d_joystickLoopDelta;
+	DWORD d_experimentLoopDelta;
 
 	// Frequency Counter reported loop frequency in Hz
 	double d_phantomFreq;
 	double d_joystickFreq;
+	double d_experimentFreq;
+
+	double d_timeElapsed;
 
 } save_data; 
 
@@ -165,9 +175,10 @@ typedef struct {
 	cGenericHapticDevicePtr p_output_Phantom;	// ptr to output phantom device
 	jsJoystick* p_Joystick;						// ptr to joystick device
 
-	// device frequency counter
+	// thread frequency counter
 	cFrequencyCounter phantomFreqCounter;
 	cFrequencyCounter joystickFreqCounter;
+	cFrequencyCounter experimentFreqCounter;
 
 	// Input Phantom state
 	double inputPhantomPosX;
@@ -214,20 +225,26 @@ typedef struct {
 	// timers to regulate thread loop rates
 	cPrecisionClock m_phantomLoopTimer;
 	cPrecisionClock m_joystickLoopTimer;
+	cPrecisionClock m_expLoopTimer;
 	
 	// Time Stamps
 	DWORD phantomLoopTimeStamp;
 	DWORD joystickLoopTimeStamp;
+	DWORD experimentLoopTimeStamp;
 	DWORD recordTimeStamp;
 
 	// Loop Rate Stamps (delta Time)
 	DWORD phantomLoopDelta;
 	DWORD joystickLoopDelta;
+	DWORD experimentLoopDelta;
 
 	// Frequency Counter reported loop frequency in Hz
 	double phantomFreq;
 	double joystickFreq;
+	double experimentFreq;
 	
+	// experiment trial elapsed time
+	double timeElapsed;
 
 } shared_data;
 

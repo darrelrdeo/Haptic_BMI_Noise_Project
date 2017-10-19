@@ -20,6 +20,8 @@
 #include "cATIForceSensor.h"
 #include "cDaqHardwareInterface.h"
 #include "chai3d.h"
+#include "experiment.h"
+#include "graphics.h"
 #include "Joystick.h"
 #include "shared_data.h"
 #include "data.h"
@@ -51,8 +53,51 @@ int main(int argc, char* argv[]) {
 	// link shared data structure
 	linkSharedData(*sharedData);
 
+	// call setup function
+	setup();
 
+	// create threads
+    cThread* phantomThread = new cThread();
+    cThread* experimentThread = new cThread();
+	cThread* joystickThread = new cThread();
+    
+    // give each thread access to shared data
+    linkSharedDataToPhantom(*sharedData);
+    linkSharedDataToExperiment(*sharedData);
+    linkSharedDataToGraphics(*sharedData);
+
+	// initialize devices
+	if ((sharedData->input_device == INPUT_PHANTOM) || ((sharedData->output_device == OUTPUT_PHANTOM)))     initPhantom();
+	//if (sharedData->input_device == INPUT_JOYSTICK) initJoystick();
+
+    // initialize experiment(default) or demo 
+    if(sharedData->opMode == EXPERIMENT) initExperiment();
+
+    // initialize graphics
+    initGraphics(argc, argv);
+    
+    // display keyboard control options
+    printf("\n\n*********************\n");
+	printf("F = fullscreen toggle\n");
+	printf("Q/ESC = quit\n");
+	printf("*********************\n\n");   	
+	
+    // start threads
+    if ((sharedData->input_device == INPUT_PHANTOM) || ((sharedData->output_device == OUTPUT_PHANTOM))) phantomThread->start(updatePhantom, CTHREAD_PRIORITY_HAPTICS);
+	//if (sharedData->input_device == INPUT_JOYSTICK) joystickThread->start(updateJoystick, CTHREAD_PRIORITY_GRAPHICS);
+    experimentThread->start(updateExperiment, CTHREAD_PRIORITY_GRAPHICS);
+    glutTimerFunc(50, graphicsTimer, 0);
+    glutMainLoop();
+    
+    // close everything
+    close();
+
+	delete sharedData;
+
+    // exit
+    return 0;
 }
+
 #endif
 
 
