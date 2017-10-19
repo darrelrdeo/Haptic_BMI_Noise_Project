@@ -1,16 +1,18 @@
-﻿Build started 10/19/2017 1:04:47 AM.
+﻿Build started 10/19/2017 3:36:42 PM.
      1>Project "C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\Haptic_BMI_Noise.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Touching "Debug\Haptic_BMI_Noise.unsuccessfulbuild".
+         Creating "Debug\Haptic_BMI_Noise.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\additional_include_directories\freeGlut /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\additional_include_directories\Force_Sensor_include /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\additional_include_directories\chai\src /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt source\Main.cpp
-         Main.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\additional_include_directories\freeGlut /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\additional_include_directories\Force_Sensor_include /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\additional_include_directories\chai\src /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Haptic_BMI_Noise\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt source\Joystick.cpp
+         Joystick.cpp
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise\haptic_bmi_noise\additional_include_directories\chai\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise\haptic_bmi_noise\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise\haptic_bmi_noise\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise\haptic_bmi_noise\source\joystick.cpp(20): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise\haptic_bmi_noise\source\joystick.cpp(66): warning C4101: 'j' : unreferenced local variable
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -18,6 +20,7 @@
          Debug\data.obj
          Debug\experiment.obj
          Debug\graphics.obj
+         Debug\Joystick.obj
          Debug\Main.obj
          Debug\Phantom.obj
      1>freeglut.lib(freeglut_callbacks.obj) : warning LNK4099: PDB 'vc100.pdb' was not found with 'freeglut.lib(freeglut_callbacks.obj)' or at 'C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise\Debug\vc100.pdb'; linking object as if no debug info
@@ -49,4 +52,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.07
+Time Elapsed 00:00:03.51

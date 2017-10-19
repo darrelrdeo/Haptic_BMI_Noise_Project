@@ -150,7 +150,7 @@ void updateExperiment(void) {
 							// set/start timer (from zero) and begin block of trials
 							p_sharedData->timer->setTimeoutPeriodSeconds(trialTime);
 							p_sharedData->timer->start(true);
-							p_sharedData->experimentStateNumber = nextExperimentState;
+							p_sharedData->experimentStateNumber = EXPERIMENT;
 
 						}
 						break; // END: PRE BLOCK STATE
@@ -177,14 +177,14 @@ void updateExperiment(void) {
 								p_sharedData->timer->setTimeoutPeriodSeconds(relaxTime);
 								p_sharedData->timer->start(true);
 								
-							}else{ // it is time to go to next block and start trial
+							}else{ // it is time to go to next trial
 							initializeCursorState();
                         
 							// set/start timer (from zero) and return to block
 							p_sharedData->timer->setTimeoutPeriodSeconds(trialTime);
 							p_sharedData->timer->start(true);
 
-							p_sharedData->experimentStateNumber = nextExperimentState;
+							p_sharedData->experimentStateNumber = EXPERIMENT;
 							}
 						}
 						break; // END RECORD STATE
@@ -230,11 +230,6 @@ void updateExperiment(void) {
 						
 						// check if break is over
 						if (p_sharedData->timer->timeoutOccurred()) {
-                        
-							// ready subject for next block of trials
-							if(nextExperimentState == EXPERIMENT){
-								p_sharedData->message = "Beginning Experimental Block " + to_string(static_cast<long long>(p_sharedData->blockNum))+ " : " + p_sharedData->blockName + " in " + to_string(static_cast<long long>(preblockTime)) + " seconds.\n\n";
-							} 
 
 							// set/start timer (from zero) and send directly to preBlock
 							p_sharedData->timer->setTimeoutPeriodSeconds(preblockTime);
@@ -262,7 +257,6 @@ void updateExperiment(void) {
 						if (p_sharedData->trialNum > trialsPerExperimentBlock) {
                        
 							// give subject a break before Experiment block
-							nextExperimentState = EXPERIMENT;
 							p_sharedData->message = "Break: " + to_string(static_cast<long long>(breakTime)) + " seconds until next experiment block.";
                         
 							// set/start timer (from zero) send to break with break time
@@ -272,14 +266,12 @@ void updateExperiment(void) {
 
 							// Iterate to next block type and parameters
 							blockNumberIndex++;
-							nextExperimentState = EXPERIMENT;
 
 							if(blockNumberIndex > numberOfBlocks){
 								
 								// thank subject and terminate experiment
 								p_sharedData->message = "Thank you.";
 								p_sharedData->experimentStateNumber = THANKS;
-								nextExperimentState = THANKS;
 								closeExperiment();
 								
 							}

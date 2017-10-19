@@ -14,6 +14,7 @@
     <ClCompile Include="source\data.cpp" />
     <ClCompile Include="source\experiment.cpp" />
     <ClCompile Include="source\graphics.cpp" />
+    <ClCompile Include="source\Joystick.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Phantom.cpp" />
   </ItemGroup>
@@ -21,6 +22,7 @@
     <ClInclude Include="include\data.h" />
     <ClInclude Include="include\experiment.h" />
     <ClInclude Include="include\graphics.h" />
+    <ClInclude Include="include\Joystick.h" />
     <ClInclude Include="include\Phantom.h" />
     <ClInclude Include="include\shared_data.h" />
   </ItemGroup>

@@ -82,6 +82,8 @@ int main(int argc, char* argv[]) {
 	printf("Q/ESC = quit\n");
 	printf("*********************\n\n");   	
 	
+	// start simulation 
+	sharedData->simulationRunning = true;
     // start threads
     if ((sharedData->input_device == INPUT_PHANTOM) || ((sharedData->output_device == OUTPUT_PHANTOM))) phantomThread->start(updatePhantom, CTHREAD_PRIORITY_HAPTICS);
 	//if (sharedData->input_device == INPUT_JOYSTICK) joystickThread->start(updateJoystick, CTHREAD_PRIORITY_GRAPHICS);
