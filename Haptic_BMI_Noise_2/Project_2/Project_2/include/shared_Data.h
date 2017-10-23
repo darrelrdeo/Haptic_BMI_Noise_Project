@@ -38,7 +38,7 @@ using namespace std;
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
 
 // Graphics
-#define CURSOR_SIZE 0.008  // cursor radius
+#define CURSOR_SIZE 0.075  // cursor radius
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
@@ -171,6 +171,13 @@ typedef struct {
 	cGenericHapticDevicePtr p_input_Phantom;	// ptr to input phantom device
 	cGenericHapticDevicePtr p_output_Phantom;	// ptr to output phantom device
 	jsJoystick* p_Joystick;						// ptr to joystick device
+
+	//haptic device specification data (e.g max linear stiffness and etc.)
+	cHapticDeviceInfo inputPhantom_spec;
+	cHapticDeviceInfo outputPhantom_spec;
+
+	//haptic tool pointers
+	cToolCursor* tool;
 
 	// thread frequency counter
 	cFrequencyCounter phantomFreqCounter;

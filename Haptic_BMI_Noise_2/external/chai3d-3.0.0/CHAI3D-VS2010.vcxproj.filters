@@ -31,9 +31,6 @@
     <Filter Include="widgets">
       <UniqueIdentifier>{b29976fa-234d-4ff1-8e1d-91e02b250b6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="system">
-      <UniqueIdentifier>{74e34530-e3d9-41f9-a420-0a2cdd5c8e3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="world">
       <UniqueIdentifier>{03527f5e-d139-46d9-8495-5b7dd696e4fe}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{673d5fec-6955-4932-b513-8b26bf699cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{74e34530-e3d9-41f9-a420-0a2cdd5c8e3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

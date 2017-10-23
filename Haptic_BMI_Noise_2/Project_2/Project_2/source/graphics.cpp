@@ -20,8 +20,6 @@ static bool fullscreen = false;  // for toggling in/out of fullscreen
 static cWorld* world;             // CHAI world
 static cCamera* camera;           // camera to render the world
 static cDirectionalLight* light;  // light to illuminate the world
-static cShapeSphere* cursor;      // create cursor 
-cMaterial cursorMat;			  // material for coloring cursor
 
 // Labels for display 
 static cLabel* opMode;            // label to display simulation operating mode
@@ -112,9 +110,16 @@ void initGraphics(int argc, char* argv[]) {
     // position/orient the camera in the world
     camera = new cCamera(world);
     world->addChild(camera);
-    camera->set(cVector3d (0.0, 0.0, 0.5),   // camera position
+
+    /*camera->set(cVector3d (0.0, 0.0, 2.0),   // camera position
                 cVector3d (0.0, 0.0, 0.0),   // look at center
-                cVector3d (0.0, 1.0, 0.0));  // "up" vector
+                cVector3d (-1.0, 0.0, 0.0));  // "up" vector
+				*/
+	//side view
+	camera->set(cVector3d (3.0, 0.0, -0.3),   // camera position
+                cVector3d (0.0, 0.0, 0.0),   // look at center
+                cVector3d (0.0, 0.0, 1.0));  // "up" vector
+
     camera->setClippingPlanes(0.01, 10.0);
     
     // add the light source
@@ -123,12 +128,32 @@ void initGraphics(int argc, char* argv[]) {
     light->setEnabled(true);
     light->setDir(0.0, 0.0, 0.0);
     
-    // create colored spheres to represent target and cursor
-    cursor = new cShapeSphere(CURSOR_SIZE);
-	cursor->m_material->setWhite();			 // white
 
-    world->addChild(cursor);
-    
+	// create new haptic tool cursor
+	p_sharedData->tool = new cToolCursor(world);
+	world->addChild(p_sharedData->tool);
+	p_sharedData->tool->setHapticDevice(p_sharedData->p_input_Phantom);
+	p_sharedData->tool->setWorkspaceRadius(2);
+	p_sharedData->tool->setRadius(CURSOR_SIZE);
+	p_sharedData->tool->m_material->setRedDark();
+	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle
+
+	//initialize the tool once the phantom has been initialized
+	p_sharedData->tool->start();
+
+	//set constraints on object stiffness based on haptic device parameters
+	double workspaceScaleFactor = p_sharedData->tool->getWorkspaceScaleFactor();
+	double objectMaxStiffness = (p_sharedData->outputPhantom_spec.m_maxLinearStiffness)/workspaceScaleFactor;
+	
+
+	// create planar surface as a rectangular mesh
+	cMesh* base = new cMesh();
+	world->addChild(base);
+	cCreateBox(base,1,1,0.1,cVector3d(0,0,-0.3),cMatrix3d(cDegToRad(0), cDegToRad(0), cDegToRad(0), C_EULER_ORDER_XYZ));
+    base->m_material->setGrayGainsboro();
+	base->m_material->setStiffness(0.5 * objectMaxStiffness);
+	base->createAABBCollisionDetector(CURSOR_SIZE); // build collision detection tree
+
     // create labels
     cFont* font = NEW_CFONTCALIBRI20();
     opMode = new cLabel(font);
@@ -200,10 +225,9 @@ void initGraphics(int argc, char* argv[]) {
 // update and re-render the graphics
 void updateGraphics(void) {
     
+	//compute global reference frames for each object
+	world->computeGlobalPositions(true);
 	
-	///////////////////////////////
-	cursor->setLocalPos(p_sharedData->cursorPosX, p_sharedData->cursorPosY, p_sharedData->cursorPosZ);
-    
     // update labels
 	// operation mode
 	switch (p_sharedData->opMode){
@@ -308,8 +332,6 @@ void updateGraphics(void) {
     message->setString(p_sharedData->message);
     message->setLocalPos((int) (0.5 * (windowW - message->getWidth())), (int) (0.8 * (windowH - message->getHeight())), 0);  // center of window
     
-
-	cursor->setShowEnabled(DEBUG_DISPLAYS);
 	opMode->setShowEnabled(DEBUG_DISPLAYS);
     input_device->setShowEnabled(DEBUG_DISPLAYS);
     XForce->setShowEnabled(DEBUG_DISPLAYS);

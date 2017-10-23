@@ -122,6 +122,9 @@ void setup(void) {
 	p_sharedData->p_Phantom_Handler->getDevice(p_sharedData->p_input_Phantom, 0);   // 1st available haptic device
 	p_sharedData->p_Phantom_Handler->getDevice(p_sharedData->p_output_Phantom, 1); // 2nd available haptic device
 
+	//get device specifications
+	p_sharedData->inputPhantom_spec = p_sharedData->p_input_Phantom->getSpecifications();
+	p_sharedData->outputPhantom_spec = p_sharedData->p_output_Phantom->getSpecifications();
 
 	// Create instance of joystick
 	p_sharedData->p_Joystick = new jsJoystick(0);

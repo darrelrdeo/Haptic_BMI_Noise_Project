@@ -26,7 +26,6 @@ static DWORD lastTime = 0;
 
 // initialize the PHANTOM device
 void initPhantom(void) {
- 
 
     // open and calibrate the input PHANTOM
     bool inPhantomOpened = p_sharedData->p_input_Phantom->open();
@@ -36,7 +35,7 @@ void initPhantom(void) {
     bool outPhantomOpened = p_sharedData->p_output_Phantom->open();
     p_sharedData->p_output_Phantom->calibrate();
 
-	 p_sharedData->p_input_Phantom->setEnableGripperUserSwitch(true);
+	p_sharedData->p_input_Phantom->setEnableGripperUserSwitch(true);
 	p_sharedData->p_output_Phantom->setEnableGripperUserSwitch(true);
 
     // initialize device loop timer
@@ -57,9 +56,7 @@ void linkSharedDataToPhantom(shared_data& sharedData) {
 
 // get PHANTOM state and update shared data
 void updatePhantom(void) {
-	#ifdef DEBUG_FLAG
-				printf("\n Entered updatePhantom \n\n", p_sharedData->inputPhantomPosX, p_sharedData->inputPhantomPosY, p_sharedData->inputPhantomPosZ);
-	#endif
+
     // initialize frequency counter
     p_sharedData->phantomFreqCounter.reset();
 
@@ -82,6 +79,25 @@ void updatePhantom(void) {
 
 			// if the input device is a phantom then perform updates for input, otherwise skip
             if (p_sharedData->input_device == INPUT_PHANTOM) {
+		
+				// add noise to the position?
+				//p_sharedData->tool->getDeviceLocalPos();
+				//p_sharedData->tool->setDeviceLocalPos();
+
+				// Update Tool Cursor pose
+				p_sharedData->tool->updatePose();
+				updateCursor();
+
+				// compute interaction forces
+				p_sharedData->tool->computeInteractionForces();
+
+				// store locally computed interaction forces
+				cVector3d computedLocalForce = p_sharedData->tool->getDeviceLocalForce();
+
+				// store this forces as the output phantom desired (global?) output forces
+				p_sharedData->outputPhantomForce_Desired_X = computedLocalForce.x();
+				p_sharedData->outputPhantomForce_Desired_Y = computedLocalForce.y();
+				p_sharedData->outputPhantomForce_Desired_Z = computedLocalForce.z();
 
                 // get INPUT PHANTOM position and velocity vectors
                 p_sharedData->p_input_Phantom->getPosition(input_pos);
@@ -91,10 +107,6 @@ void updatePhantom(void) {
 				p_sharedData->inputPhantomPosX = input_pos.x();
 				p_sharedData->inputPhantomPosY = input_pos.y();
 				p_sharedData->inputPhantomPosZ = input_pos.z();
-
-#ifdef DEBUG_FLAG
-				printf("\n input phantom Pos: %f  %f  %f \n\n", p_sharedData->inputPhantomPosX, p_sharedData->inputPhantomPosY, p_sharedData->inputPhantomPosZ);
-#endif
 
 				// store velocity values into respective vars in sharedData structure
                 p_sharedData->inputPhantomVelX = input_vel.x();
@@ -108,14 +120,12 @@ void updatePhantom(void) {
 				p_sharedData->p_input_Phantom->getUserSwitch(2,stat2);
 				if(stat1 || stat2) p_sharedData->inputPhantomSwitch = 1;
 				else p_sharedData->inputPhantomSwitch = 0;
-
-				// Mapping onto cursor state
-				updateCursor();
    
             }
 
 			// if the output device is a phantom then perform updates for output, otherwise skip
 			if (p_sharedData->output_device == OUTPUT_PHANTOM) {
+
 				// get current forces output by OUTPUT PHANTOM device
 				p_sharedData->p_output_Phantom->getForce(output_force);
 				p_sharedData->outputPhantomForce_X = output_force.x();
@@ -157,12 +167,12 @@ void updatePhantom(void) {
 }
 
 
-
+//possibly a redundant function?
 void updateCursor(void) {
 	// position-position mapping between input phantom and virtual cursor
-	p_sharedData->cursorPosX = phantomScalar*p_sharedData->inputPhantomPosX;
-	p_sharedData->cursorPosY = phantomScalar*p_sharedData->inputPhantomPosY;
-	p_sharedData->cursorPosZ = phantomScalar*p_sharedData->inputPhantomPosZ;
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
+	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
 
 
 

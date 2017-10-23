@@ -675,6 +675,21 @@ bool cGenericTool::setWorkspaceScaleFactor(const double& a_workspaceScaleFactor)
     return (true);
 }
 
+//new function
+cVector3d cGenericTool::getDeviceLocalForce(void) { 
+
+	// check if device is available
+    if ((m_hapticDevice == nullptr) || (!m_enabled)) { return (false); }
+
+    // compute local forces from global forces compute in world coordinates
+    cMatrix3d rot;
+    m_globalRot.transr(rot);
+    rot.mulr(m_lastComputedGlobalForce, m_lastComputedLocalForce);
+    rot.mulr(m_lastComputedGlobalTorque, m_lastComputedLocalTorque);
+	
+	return (m_lastComputedLocalForce);
+
+}
 
 //------------------------------------------------------------------------------
 } // namespace chai3d
