@@ -1,9 +1,9 @@
-﻿Build started 10/23/2017 3:59:24 PM.
+﻿Build started 10/26/2017 7:20:58 AM.
      1>Project "C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\Project_2.vcxproj" on node 3 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Project_2.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\include /I../../external/CHAI3D/external/Eigen /I../../external/CHAI3D/src /I../../external/CHAI3D/external/glew/include /I../../external/CHAI3D/extras/freeglut/include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt source\Phantom.cpp source\graphics.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\include /I../../external/CHAI3D/external/Eigen /I../../external/CHAI3D/src /I../../external/CHAI3D/external/glew/include /I../../external/CHAI3D/extras/freeglut/include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt source\graphics.cpp
          graphics.cpp
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
@@ -13,14 +13,6 @@
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-         Phantom.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-         Generating Code...
        Link:
          c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/win-Win32\Project_2.exe" /NOLOGO /LIBPATH:"C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\external\chai3d-3.0.0\extras\freeglut\lib\Debug\Win32" /LIBPATH:C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\libs /LIBPATH:"C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\external\chai3d-3.0.0\lib\Debug\Win32" chai3d.lib freeglut.lib js.lib ul.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Project_2.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\bin\win-Win32\Project_2.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../bin/win-Win32\Project_2.lib" /MACHINE:X86 Debug\data.obj
          Debug\experiment.obj
@@ -39,4 +31,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.17
+Time Elapsed 00:00:02.45

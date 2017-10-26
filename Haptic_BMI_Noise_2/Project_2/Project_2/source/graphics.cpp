@@ -5,6 +5,8 @@
 using namespace chai3d;
 using namespace std;
 
+#define MESH_OBJECT
+
 static bool DEBUG_DISPLAYS = true; // if true then all debug labels will be displayed
 
 static const int Tgraphics = 20;  // minimum time between graphic updates [msec] = 50 Hz
@@ -63,10 +65,7 @@ static cLabel* output_phantomVelX;
 static cLabel* output_phantomVelY;
 static cLabel* output_phantomVelZ;
 
-
-
 static shared_data* p_sharedData;  // structure for sharing data between threads (NOTE: for graphics,
-                                  
 
 // point p_sharedData to sharedData, which is the data shared between all threads
 void linkSharedDataToGraphics(shared_data& sharedData) {
@@ -111,32 +110,36 @@ void initGraphics(int argc, char* argv[]) {
     camera = new cCamera(world);
     world->addChild(camera);
 
-    /*camera->set(cVector3d (0.0, 0.0, 2.0),   // camera position
+    camera->set(cVector3d (1.0, 0.0, 0.0),   // camera position
                 cVector3d (0.0, 0.0, 0.0),   // look at center
-                cVector3d (-1.0, 0.0, 0.0));  // "up" vector
-				*/
+                cVector3d (0.0, 0.0,1.0));  // "up" vector
+				
 	//side view
-	camera->set(cVector3d (3.0, 0.0, -0.3),   // camera position
+	/*camera->set(cVector3d (3.0, 0.0, -0.3),   // camera position
                 cVector3d (0.0, 0.0, 0.0),   // look at center
                 cVector3d (0.0, 0.0, 1.0));  // "up" vector
+				*/
 
-    camera->setClippingPlanes(0.01, 10.0);
-    
+    camera->setClippingPlanes(0.01, 100.0);
+
+    // enable multi-pass rendering to handle transparent objects
+    camera->setUseMultipassTransparency(true);
+
     // add the light source
     light = new cDirectionalLight(world);
     world->addChild(light);
     light->setEnabled(true);
-    light->setDir(0.0, 0.0, 0.0);
-    
+    light->setDir(-3.0, -0.5, 0.0);  
 
 	// create new haptic tool cursor
 	p_sharedData->tool = new cToolCursor(world);
 	world->addChild(p_sharedData->tool);
 	p_sharedData->tool->setHapticDevice(p_sharedData->p_input_Phantom);
-	p_sharedData->tool->setWorkspaceRadius(2);
+	p_sharedData->tool->setWorkspaceRadius(1);
 	p_sharedData->tool->setRadius(CURSOR_SIZE);
 	p_sharedData->tool->m_material->setRedDark();
 	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle
+	p_sharedData->tool->m_hapticPoint->m_sphereProxy->m_material->setWhite();
 
 	//initialize the tool once the phantom has been initialized
 	p_sharedData->tool->start();
@@ -145,14 +148,78 @@ void initGraphics(int argc, char* argv[]) {
 	double workspaceScaleFactor = p_sharedData->tool->getWorkspaceScaleFactor();
 	double objectMaxStiffness = (p_sharedData->outputPhantom_spec.m_maxLinearStiffness)/workspaceScaleFactor;
 	
-
+#ifdef PLANAR 
 	// create planar surface as a rectangular mesh
 	cMesh* base = new cMesh();
 	world->addChild(base);
 	cCreateBox(base,1,1,0.1,cVector3d(0,0,-0.3),cMatrix3d(cDegToRad(0), cDegToRad(0), cDegToRad(0), C_EULER_ORDER_XYZ));
-    base->m_material->setGrayGainsboro();
+	base->m_material->setRedCrimson();
 	base->m_material->setStiffness(0.5 * objectMaxStiffness);
 	base->createAABBCollisionDetector(CURSOR_SIZE); // build collision detection tree
+#endif
+
+#ifdef MESH_OBJECT
+	//add ZF's mesh object
+	p_sharedData->p_vholeCasing = new cMultiMesh();
+	world->addChild(p_sharedData->p_vholeCasing);
+
+	//load obj file
+	bool fileload = p_sharedData->p_vholeCasing->loadFromFile("../../bin/resources/Outer_Casing.obj");
+	
+		if (!fileload)
+    {
+        printf("Error - 3D Model failed to load correctly.\n");
+    }
+	
+	//culling set to false to help render both sides of the surface
+	p_sharedData->p_vholeCasing->setUseCulling(false);
+
+	// compute a boundary box
+    p_sharedData->p_vholeCasing->computeBoundaryBox(true);
+
+	//set the position of the object
+	//p_sharedData->p_vholeCasing->setLocalPos(-1.0 * p_sharedData->p_vholeCasing->getBoundaryCenter());
+	p_sharedData->p_vholeCasing->setLocalPos(cVector3d(0,0,0));
+
+    // get dimensions of object
+    double size = cSub(p_sharedData->p_vholeCasing->getBoundaryMax(), p_sharedData->p_vholeCasing->getBoundaryMin()).length();
+
+    // resize object to screen
+    if (size > 0)
+	{p_sharedData->p_vholeCasing->scale(OBJECT_SCALE_FACTOR);}
+
+    // compute collision detection algorithm
+    p_sharedData->p_vholeCasing->createAABBCollisionDetector(CURSOR_SIZE);
+
+    // define a default stiffness for the object
+    p_sharedData->p_vholeCasing->setStiffness(0.5 * objectMaxStiffness, true);
+	
+	// rotate object in scene
+	p_sharedData->p_vholeCasing->rotateExtrinsicEulerAnglesDeg(0,90,0,C_EULER_ORDER_XYZ);
+	
+    // Set the transparency of the petri dish
+    p_sharedData->p_vholeCasing->setTransparencyLevel(0.5, true, true);	
+#endif
+
+	//Generate mesh objects different hole configs
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_n40/Tissue_n40_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_n20/Tissue_n20_p40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p0/Tissue_p0_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p20/Tissue_p20_p20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p40/Tissue_p40_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+
+	//Generate mesh for the cover
+	CreateAndFillMeshVHole(p_sharedData->p_vholeCover,"../../bin/resources/Tissue_NoHole.obj",
+						cVector3d(0,0,0.003), objectMaxStiffness*0.75,false);
+
+    p_sharedData->p_vholeSurface[0]->setTransparencyLevel(1.0, true, true);
+	p_sharedData->p_vholeSurface[0]->setGhostEnabled(false);
+
 
     // create labels
     cFont* font = NEW_CFONTCALIBRI20();
@@ -227,7 +294,7 @@ void updateGraphics(void) {
     
 	//compute global reference frames for each object
 	world->computeGlobalPositions(true);
-	
+
     // update labels
 	// operation mode
 	switch (p_sharedData->opMode){
@@ -430,6 +497,59 @@ void respToKey(unsigned char key, int x, int y) {
             break;
     }
     
+}
+
+void CreateAndFillMeshVHole(cMultiMesh* &a_mesh, const char* a_fileName, cVector3d a_translation, double a_stiffness, bool collision)
+{
+    // create a virtual mesh
+    a_mesh = new cMultiMesh();
+
+    // add object to world
+    world->addChild(a_mesh);
+
+    // load an object file
+    bool fileload = a_mesh->loadFromFile(a_fileName);
+
+    if (!fileload)
+    {
+        printf("Error - 3D Model failed to load correctly.\n");
+    }
+
+	//culling set to false to help render both sides of the surface
+	p_sharedData->p_vholeCasing->setUseCulling(false);
+
+    // compute a boundary box
+    a_mesh->computeBoundaryBox(true);
+
+	// set the position of the object at the center of the world
+    //a_mesh->setLocalPos(-1.0 * p_sharedData->p_vholeCasing->getBoundaryCenter()+a_translation);
+	a_mesh->setLocalPos(cVector3d(0,0,0)+a_translation);
+
+    // get dimensions of object
+    double size = cSub(a_mesh->getBoundaryMax(), a_mesh->getBoundaryMin()).length();
+
+    // resize object to screen
+    if (size > 0)
+    {
+        a_mesh->scale(OBJECT_SCALE_FACTOR);
+    }
+
+	// rotate object in scene
+	a_mesh->rotateExtrinsicEulerAnglesDeg(0,90,0,C_EULER_ORDER_XYZ);
+
+    // compute collision detection algorithm
+	if(collision)
+		{a_mesh->createAABBCollisionDetector(CURSOR_SIZE);}
+	else
+		{}
+
+    // define a default stiffness for the object
+    a_mesh->setStiffness(a_stiffness,true);
+
+	// Set the transparency of the petri dish
+    a_mesh->setTransparencyLevel(0.0, true, true);
+    a_mesh->setGhostEnabled(true);
+
 }
 
 // shut down the simulation in response to quitting/ESCaping from within graphics window

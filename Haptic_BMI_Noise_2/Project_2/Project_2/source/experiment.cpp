@@ -4,7 +4,7 @@
 #include <cmath>
 #include <random>
 #include "js.h"
-
+#include <ctime>
 
 using namespace chai3d;
 using namespace std;
@@ -244,7 +244,7 @@ void updateExperiment(void) {
 						case EXPERIMENT:
 							// update experiment name
 							p_sharedData->experimentStateName = "EXPERIMENT";
-						
+
 							// save data from time step
 							p_sharedData->timeElapsed = p_sharedData->timer->getCurrentTimeSeconds();
 

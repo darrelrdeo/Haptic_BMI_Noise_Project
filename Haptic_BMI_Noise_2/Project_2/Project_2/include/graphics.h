@@ -16,6 +16,7 @@ void updateGraphics(void);
 void graphicsTimer(int data);
 void resizeWindow(int w, int h);
 void respToKey(unsigned char key, int x, int y);
+void CreateAndFillMeshVHole(cMultiMesh *&a_mesh, const char* a_fileName, cVector3d a_translation, double a_stiffness, bool collision);
 void close(void);
 
 #endif  // GRAPHICS_H

@@ -38,7 +38,10 @@ using namespace std;
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
 
 // Graphics
-#define CURSOR_SIZE 0.075  // cursor radius
+#define CURSOR_SIZE 0.007  // cursor radius
+#define OBJECT_SCALE_FACTOR 2
+
+
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
@@ -90,7 +93,6 @@ typedef struct {
 	double d_outputPhantomForce_X;
 	double d_outputPhantomForce_Y;
 	double d_outputPhantomForce_Z;
-
 
 	// Joystick State
 	double d_joystickPosX;
@@ -145,6 +147,14 @@ typedef struct {
 
 	// graphics
 	string message;
+
+	// Mesh Objects
+	cMultiMesh* p_vholeCasing;
+	cMultiMesh* p_vholeCover;
+	cMultiMesh* p_vholeSurface[5];
+
+	//mesh object regen flag
+	bool mesh_regen_flag;
 
 	// state machine states
 	int experimentStateNumber;

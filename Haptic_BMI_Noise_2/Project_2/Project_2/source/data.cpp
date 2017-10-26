@@ -18,6 +18,7 @@ void linkSharedData(shared_data& sharedData) {
 // set-up for simulation
 void setup(void) {
     // initialize all elements of p_sharedData structure
+
 	// Simulation State
 	p_sharedData->simulationRunning = false; // selected during setup/initialization
 	p_sharedData->simulationFinished = false;// executed by experiment
@@ -84,12 +85,10 @@ void setup(void) {
 	p_sharedData->outputPhantomForce_Y = 0;
 	p_sharedData->outputPhantomForce_Z = 0;
 
-
 	// Joystick State
 	p_sharedData->joystickPosX = 0;
 	p_sharedData->joystickPosY = 0;
 	p_sharedData->joystickSwitch = 0;
-
 
 	// Time Stamps
 	p_sharedData->phantomLoopTimeStamp = 0;
