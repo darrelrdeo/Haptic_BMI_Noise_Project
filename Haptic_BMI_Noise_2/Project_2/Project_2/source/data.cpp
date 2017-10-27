@@ -41,9 +41,9 @@ void setup(void) {
 	p_sharedData->trialNum = 0;			// current trial number
 	
 	// cursor parameters
-	p_sharedData->cursorPosX = 0;	// current cursor x position
+	p_sharedData->cursorPosX = 0.11;	// current cursor x position NOTE: This should be set to our desired z position in the space
 	p_sharedData->cursorPosY = 0;	// current cursor y position
-	p_sharedData->cursorPosZ = 0;	// current curosr z position
+	p_sharedData->cursorPosZ = 0;	// current cursor z position 
 
 	p_sharedData->cursorPosX_OneAgo = 0;
 	p_sharedData->cursorPosY_OneAgo = 0;

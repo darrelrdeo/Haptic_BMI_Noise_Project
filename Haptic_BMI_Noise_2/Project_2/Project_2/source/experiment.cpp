@@ -158,7 +158,7 @@ void updateExperiment(void) {
 							initHolePos();
 
 							// Initialize cursor state
-							initializeCursorState();		
+							//initializeCursorState();		
 
 							// set/start timer (from zero) and begin block of trials
 							p_sharedData->timer->setTimeoutPeriodSeconds(trialTime);
@@ -191,7 +191,7 @@ void updateExperiment(void) {
 								p_sharedData->timer->start(true);
 								
 							}else{ // it is time to go to next trial
-							initializeCursorState();
+							//initializeCursorState();
 
 							//initialize hole position
 							initHolePos();
@@ -227,7 +227,7 @@ void updateExperiment(void) {
 
 							if ((p_sharedData->timer->timeoutOccurred()) && (userReady)){
 								userReady = 0;
-								initializeCursorState();
+								//initializeCursorState();
 								
 								// set/start timer (from zero) and return to block
 								p_sharedData->timer->setTimeoutPeriodSeconds(trialTime);

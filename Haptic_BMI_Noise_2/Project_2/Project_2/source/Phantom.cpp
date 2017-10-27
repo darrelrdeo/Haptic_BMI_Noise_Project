@@ -167,14 +167,23 @@ void updatePhantom(void) {
 }
 
 
-//possibly a redundant function?
 void updateCursor(void) {
 	// position-position mapping between input phantom and virtual cursor
-	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
+	
+	/*
+	//This code segment maps cursor position to the "goal sphere"
 	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
+	//remove this update because we want the cursor to always be in the same plane
+	//p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
+	*/
 
+	//This code segment maps cursor position to the "proxy sphere"
+	p_sharedData->cursorPosY = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().z();
 
+	// update cursor position
+	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
 
 }
 

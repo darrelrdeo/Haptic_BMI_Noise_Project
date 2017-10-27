@@ -153,9 +153,6 @@ typedef struct {
 	cMultiMesh* p_vholeCover;
 	cMultiMesh* p_vholeSurface[5];
 
-	//mesh object regen flag
-	bool mesh_regen_flag;
-
 	// state machine states
 	int experimentStateNumber;
 	string experimentStateName;
@@ -188,6 +185,9 @@ typedef struct {
 
 	//haptic tool pointers
 	cToolCursor* tool;
+
+	//virtual cursor
+	cShapeSphere* vCursor;
 
 	// thread frequency counter
 	cFrequencyCounter phantomFreqCounter;

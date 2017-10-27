@@ -139,7 +139,12 @@ void initGraphics(int argc, char* argv[]) {
 	p_sharedData->tool->setRadius(CURSOR_SIZE);
 	p_sharedData->tool->m_material->setRedDark();
 	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle
-	p_sharedData->tool->m_hapticPoint->m_sphereProxy->m_material->setWhite();
+	p_sharedData->tool->m_hapticPoint->m_sphereProxy->m_material->setRedCrimson();
+
+	//create virtual cursor that shadows the haptic tool
+	p_sharedData->vCursor= new cShapeSphere(CURSOR_SIZE);
+	world->addChild(p_sharedData->vCursor);
+	p_sharedData->vCursor->m_material->setRedCrimson();
 
 	//initialize the tool once the phantom has been initialized
 	p_sharedData->tool->start();
