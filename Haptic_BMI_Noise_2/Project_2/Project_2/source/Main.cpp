@@ -123,9 +123,10 @@ int main(int argc, char* argv[]) {
     // start threads
     if ((sharedData->input_device == INPUT_PHANTOM) || ((sharedData->output_device == OUTPUT_PHANTOM))) phantomThread->start(updatePhantom, CTHREAD_PRIORITY_HAPTICS);
 	//if (sharedData->input_device == INPUT_JOYSTICK) joystickThread->start(updateJoystick, CTHREAD_PRIORITY_GRAPHICS);
-    experimentThread->start(updateExperiment, CTHREAD_PRIORITY_GRAPHICS);
-    glutTimerFunc(50, graphicsTimer, 0);
+	experimentThread->start(updateExperiment, CTHREAD_PRIORITY_GRAPHICS);
+	glutTimerFunc(50, graphicsTimer, 0);
     glutMainLoop();
+
     
     // close everything
     close();

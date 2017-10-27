@@ -20,5 +20,6 @@ void updateExperiment(void);
 void closeExperiment(void);
 
 void initializeCursorState(void);
+void initHolePos();
 
 #endif  // EXPERIMENT_H

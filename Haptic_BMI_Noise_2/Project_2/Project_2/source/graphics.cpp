@@ -204,21 +204,21 @@ void initGraphics(int argc, char* argv[]) {
 	//Generate mesh objects different hole configs
 	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_n40/Tissue_n40_n20.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_n20/Tissue_n20_p40.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[1], "../../bin/resources/X_n20/Tissue_n20_p40.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p0/Tissue_p0_n20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[2], "../../bin/resources/X_p0/Tissue_p0_n20.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p20/Tissue_p20_p20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[3], "../../bin/resources/X_p20/Tissue_p20_p20.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p40/Tissue_p40_n20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[4], "../../bin/resources/X_p40/Tissue_p40_n20.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
 
 	//Generate mesh for the cover
 	CreateAndFillMeshVHole(p_sharedData->p_vholeCover,"../../bin/resources/Tissue_NoHole.obj",
 						cVector3d(0,0,0.003), objectMaxStiffness*0.75,false);
 
-    p_sharedData->p_vholeSurface[0]->setTransparencyLevel(1.0, true, true);
-	p_sharedData->p_vholeSurface[0]->setGhostEnabled(false);
+    //p_sharedData->p_vholeSurface[1]->setTransparencyLevel(1.0, true, true);
+	//p_sharedData->p_vholeSurface[1]->setGhostEnabled(false);
 
 
     // create labels
