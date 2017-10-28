@@ -41,7 +41,8 @@ using namespace std;
 #define CURSOR_SIZE 0.007  // cursor radius
 #define OBJECT_SCALE_FACTOR 2
 
-
+// Noise Generation
+#define SIGMA 0.015
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {

@@ -2,12 +2,17 @@
 #include "Phantom.h"
 #include <cmath>
 #include <limits>
+#include "ziggurat.h"
+#include <stdint.h>
+
 using namespace chai3d;
 using namespace std;
 
 #define DEBUG_FLAG
 
 static const double phantomScalar = 2;  // to scale PHANTOM workspace to graphics workspace
+
+cVector3d cursor_pos; //temporary variable for haptic tool cursor position
 
 cVector3d input_pos;  // temporary variable for input PHANTOM position 
 cVector3d input_vel;  // temporary variable for input PHANTOM velocity 
@@ -18,6 +23,15 @@ cVector3d output_vel;  // temporary variable for output PHANTOM velocity
 cVector3d output_force; // temp var for output PHANTOM currently output force
 
 static shared_data* p_sharedData;  // structure for sharing data between threads
+
+//noise generator variables
+uint32_t rand_seed;
+uint32_t kn[128];
+float wn[128];
+float fn[128]; 
+float noise_x,noise_y,noise_z;
+
+
 
 // thread timestamp vars
 static DWORD currTime = 0;
@@ -41,6 +55,10 @@ void initPhantom(void) {
     // initialize device loop timer
 	p_sharedData->m_phantomLoopTimer.setTimeoutPeriodSeconds(LOOP_TIME);
 	p_sharedData->m_phantomLoopTimer.start();
+
+	//initialize random seed
+	rand_seed = (uint32_t)cpu_time;
+	printf("time seed = %ul \n", rand_seed);
 
 #ifdef DEBUG_FLAG
     printf("\n Phantoms initialized!\n");
@@ -79,13 +97,21 @@ void updatePhantom(void) {
 
 			// if the input device is a phantom then perform updates for input, otherwise skip
             if (p_sharedData->input_device == INPUT_PHANTOM) {
-		
-				// add noise to the position?
-				//p_sharedData->tool->getDeviceLocalPos();
-				//p_sharedData->tool->setDeviceLocalPos();
+				
+				//compute noise
+				r4_nor_setup(kn, fn, wn);
+				noise_x = (SIGMA / p_sharedData->tool->getWorkspaceScaleFactor()) * r4_nor (rand_seed, kn,fn,wn);
+				noise_y = (SIGMA / p_sharedData->tool->getWorkspaceScaleFactor()) * r4_nor (rand_seed, kn,fn,wn);
+				noise_z = (SIGMA / p_sharedData->tool->getWorkspaceScaleFactor()) * r4_nor (rand_seed, kn,fn,wn);
+
+				//seed cursor position with noise
+				p_sharedData->tool->updatePose(); //collect phantom and map it to workspace position
+				cursor_pos = p_sharedData->tool->getDeviceLocalPos(); // temporarily store cursor data
+				cursor_pos = cursor_pos+ cVector3d(noise_x,noise_y,noise_z); //add noise
+				p_sharedData->tool->setLocalPos(cursor_pos); //insert it into cursor
 
 				// Update Tool Cursor pose
-				p_sharedData->tool->updatePose();
+				p_sharedData->tool->updateToolImagePosition(); //update cursor position in workspace
 				updateCursor();
 
 				// compute interaction forces
@@ -99,10 +125,10 @@ void updatePhantom(void) {
 				p_sharedData->outputPhantomForce_Desired_Y = computedLocalForce.y();
 				p_sharedData->outputPhantomForce_Desired_Z = computedLocalForce.z();
 
-                // get INPUT PHANTOM position and velocity vectors
+				// get INPUT PHANTOM position and velocity vectors
                 p_sharedData->p_input_Phantom->getPosition(input_pos);
                 p_sharedData->p_input_Phantom->getLinearVelocity(input_vel);
-    
+
                 //store position values into respective variable in sharedData structure
 				p_sharedData->inputPhantomPosX = input_pos.x();
 				p_sharedData->inputPhantomPosY = input_pos.y();
@@ -186,7 +212,6 @@ void updateCursor(void) {
 	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
 
 }
-
 
 
 

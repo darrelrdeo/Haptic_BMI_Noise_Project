@@ -81,6 +81,7 @@
     <ClCompile Include="source\Joystick.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Phantom.cpp" />
+    <ClCompile Include="source\ziggurat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\external\chai3d-3.0.0\extras\freeglut\include\GL\glut.h" />
@@ -94,6 +95,7 @@
     <ClInclude Include="include\NIDAQmx.h" />
     <ClInclude Include="include\Phantom.h" />
     <ClInclude Include="include\shared_Data.h" />
+    <ClInclude Include="include\ziggurat.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
