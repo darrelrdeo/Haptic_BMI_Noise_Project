@@ -395,8 +395,8 @@ void initHolePos()
 	p_sharedData->p_vholeSurface[*p_randTrial]->setTransparencyLevel(1.0,true,true);
 
 	//occlude surface
-	p_sharedData->p_vholeCover->setGhostEnabled(false);
-	p_sharedData->p_vholeCover->setTransparencyLevel(1.0,true,true);
+	//p_sharedData->p_vholeCover->setGhostEnabled(false);
+	//p_sharedData->p_vholeCover->setTransparencyLevel(1.0,true,true);
 
 	printf("hole number = %i \n",randTrial);
 

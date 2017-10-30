@@ -100,20 +100,16 @@ void updatePhantom(void) {
 				
 				//compute noise
 				r4_nor_setup(kn, fn, wn);
-				noise_x = (SIGMA / p_sharedData->tool->getWorkspaceScaleFactor()) * r4_nor (rand_seed, kn,fn,wn);
-				noise_y = (SIGMA / p_sharedData->tool->getWorkspaceScaleFactor()) * r4_nor (rand_seed, kn,fn,wn);
-				noise_z = (SIGMA / p_sharedData->tool->getWorkspaceScaleFactor()) * r4_nor (rand_seed, kn,fn,wn);
+				noise_x = SIGMA * r4_nor (rand_seed, kn,fn,wn);
+				noise_y = SIGMA * r4_nor (rand_seed, kn,fn,wn);
+				noise_z = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 
-				//seed cursor position with noise
-				p_sharedData->tool->updatePose(); //collect phantom and map it to workspace position
-				cursor_pos = p_sharedData->tool->getDeviceLocalPos(); // temporarily store cursor data
-				cursor_pos = cursor_pos+ cVector3d(noise_x,noise_y,noise_z); //add noise
-				p_sharedData->tool->setLocalPos(cursor_pos); //insert it into cursor
+				// Inject noise and update tool position
+				p_sharedData->tool->updatePoseNoisy(noise_x,noise_y,noise_z);
 
-				// Update Tool Cursor pose
-				p_sharedData->tool->updateToolImagePosition(); //update cursor position in workspace
+				//p_sharedData->tool->updatePose();
+
 				updateCursor();
-
 				// compute interaction forces
 				p_sharedData->tool->computeInteractionForces();
 
@@ -191,7 +187,6 @@ void updatePhantom(void) {
     }
 
 }
-
 
 void updateCursor(void) {
 	// position-position mapping between input phantom and virtual cursor

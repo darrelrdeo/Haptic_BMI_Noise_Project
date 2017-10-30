@@ -691,6 +691,85 @@ cVector3d cGenericTool::getDeviceLocalForce(void) {
 
 }
 
+//==============================================================================
+void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
+{
+	// check if device is available
+    if ((m_hapticDevice == nullptr) || (!m_enabled)) { return; }
+
+
+    //////////////////////////////////////////////////////////////////////
+    // retrieve data from haptic device
+    //////////////////////////////////////////////////////////////////////
+
+    // temp variables
+    cVector3d devicePos, deviceLinVel, deviceAngVel;
+    cMatrix3d deviceRot;
+    double deviceGripperAngle;
+
+	cVector3d noise_vector;
+
+    // init temp variable
+    devicePos.zero();
+    deviceLinVel.zero();
+    deviceAngVel.zero();
+    deviceRot.identity();
+    deviceGripperAngle = 0.0;
+	noise_vector = cVector3d(noise_x,noise_y,noise_z);
+
+    // update position, orientation, linear and angular velocities from device
+    m_hapticDevice->getPosition(devicePos);
+    m_hapticDevice->getRotation(deviceRot);
+    m_hapticDevice->getGripperAngleRad(deviceGripperAngle);
+    m_hapticDevice->getLinearVelocity(deviceLinVel);
+    m_hapticDevice->getAngularVelocity(deviceAngVel);
+
+	//inject noise
+	devicePos = devicePos+noise_vector;
+
+    //////////////////////////////////////////////////////////////////////
+    // update information inside tool
+    //////////////////////////////////////////////////////////////////////
+
+    // compute local position - adjust for tool workspace scale factor
+    m_deviceLocalPos = m_workspaceScaleFactor * devicePos;
+
+    // compute global position in world coordinates
+    cVector3d pos;
+    m_globalRot.mulr(m_deviceLocalPos, pos);
+    pos.addr(m_globalPos, m_deviceGlobalPos);
+
+    // compute local rotation
+    m_deviceLocalRot = deviceRot; 
+
+    // compute global rotation
+    m_deviceLocalRot.mulr(m_globalRot, m_deviceGlobalRot);
+
+    // compute local linear velocity - adjust for tool workspace scale factor
+    m_deviceLocalLinVel = m_workspaceScaleFactor * deviceLinVel;
+
+    // compute global linear velocity
+    m_globalRot.mulr(m_deviceLocalLinVel, m_deviceGlobalLinVel);
+
+    // compute local rotational velocity
+    m_deviceLocalAngVel = deviceAngVel;
+
+    // compute global rotational velocity
+    m_globalRot.mulr(m_deviceLocalAngVel, m_deviceGlobalAngVel);
+
+    // compute gripper angle
+    m_deviceGripperAngle = deviceGripperAngle;
+
+    // read user switch status
+    m_userSwitch0 = getUserSwitch(0);
+
+    // update the position and orientation of the tool image
+    updateToolImagePosition();
+
+
+}
+
+
 //------------------------------------------------------------------------------
 } // namespace chai3d
 //------------------------------------------------------------------------------

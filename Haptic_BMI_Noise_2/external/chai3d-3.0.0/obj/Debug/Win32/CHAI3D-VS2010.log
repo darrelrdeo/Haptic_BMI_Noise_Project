@@ -1,4 +1,4 @@
-﻿Build started 10/28/2017 4:31:02 PM.
+﻿Build started 10/30/2017 9:26:14 AM.
      1>Project "C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\external\chai3d-3.0.0\CHAI3D-VS2010.vcxproj" on node 3 (build target(s)).
      1>InitializeBuildStatus:
          Creating "obj/Debug/Win32\CHAI3D.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -15,4 +15,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.28
+Time Elapsed 00:00:00.29

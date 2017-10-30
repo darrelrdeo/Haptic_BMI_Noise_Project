@@ -198,6 +198,7 @@ public:
     }
 
 #ifdef C_USE_EIGEN
+
     //! Set the local rotation matrix for this object.
     inline void setLocalRot(const Eigen::Matrix3d a_localRot)
     {

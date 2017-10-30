@@ -191,8 +191,11 @@ public:
     //! Enable or disable the dynamic proxy algorithm to support dynamic environements where objects move.
     virtual void enableDynamicObjects(bool a_enabled);
 
-	//compute local device forces after running computeInteractionForces();
+	// compute local device forces after running computeInteractionForces();
 	virtual cVector3d getDeviceLocalForce();
+
+	// injecting noise and update position and orientation of the tool image
+	virtual void updatePoseNoisy(float noise_x,float noise_y,float noise_z);
 
     //--------------------------------------------------------------------------
     // PUBLIC METHODS - INTERACTION POINTS

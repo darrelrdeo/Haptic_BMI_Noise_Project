@@ -42,7 +42,7 @@ using namespace std;
 #define OBJECT_SCALE_FACTOR 2
 
 // Noise Generation
-#define SIGMA 0.015
+#define SIGMA 0.005
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
