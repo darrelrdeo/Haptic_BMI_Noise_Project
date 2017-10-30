@@ -38,11 +38,11 @@ using namespace std;
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
 
 // Graphics
-#define CURSOR_SIZE 0.007  // cursor radius
-#define OBJECT_SCALE_FACTOR 2
+#define CURSOR_SIZE 0.003  // cursor radius
+#define OBJECT_SCALE_FACTOR 1
 
 // Noise Generation
-#define SIGMA 0.005
+#define SIGMA 0.01
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {

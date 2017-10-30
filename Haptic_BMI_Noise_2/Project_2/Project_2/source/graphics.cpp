@@ -110,9 +110,9 @@ void initGraphics(int argc, char* argv[]) {
     camera = new cCamera(world);
     world->addChild(camera);
 
-    camera->set(cVector3d (1.0, 0.0, 0.0),   // camera position
+    camera->set(cVector3d (0.5, 0.0, -0.003),   // camera position
                 cVector3d (0.0, 0.0, 0.0),   // look at center
-                cVector3d (0.0, 0.0,1.0));  // "up" vector
+                cVector3d (0.0, 0.0, 1.0));  // "up" vector
 				
 	//side view
 	/*camera->set(cVector3d (3.0, 0.0, -0.3),   // camera position
@@ -135,7 +135,7 @@ void initGraphics(int argc, char* argv[]) {
 	p_sharedData->tool = new cToolCursor(world);
 	world->addChild(p_sharedData->tool);
 	p_sharedData->tool->setHapticDevice(p_sharedData->p_input_Phantom);
-	p_sharedData->tool->setWorkspaceRadius(1);
+	p_sharedData->tool->setWorkspaceRadius(0.1);
 	p_sharedData->tool->setRadius(CURSOR_SIZE);
 	p_sharedData->tool->m_material->setRedDark();
 	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle

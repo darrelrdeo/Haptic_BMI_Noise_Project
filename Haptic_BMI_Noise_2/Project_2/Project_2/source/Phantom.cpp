@@ -31,7 +31,11 @@ float wn[128];
 float fn[128]; 
 float noise_x,noise_y,noise_z;
 
-
+//filter variables
+double filt_sampleTime = 0.001;
+cVector3d filt_noise_oneAgo = 0;
+cVector3d filt_noise_twoAgo = 0;
+cVector3d filt_noise_threeAgo = 0;
 
 // thread timestamp vars
 static DWORD currTime = 0;
@@ -104,12 +108,25 @@ void updatePhantom(void) {
 				noise_y = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 				noise_z = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 
-				// Inject noise and update tool position
+				//filter noise signal
+				filt_sampleTime = 1/(p_sharedData->phantomFreqCounter.getFrequency());
+
+				noise_x = LowPassFilterThirdOrder(filt_sampleTime,15,noise_x,filt_noise_oneAgo.x(),filt_noise_twoAgo.x(),filt_noise_threeAgo.x());
+				noise_y = LowPassFilterThirdOrder(filt_sampleTime,15,noise_y,filt_noise_oneAgo.y(),filt_noise_twoAgo.y(),filt_noise_threeAgo.y());
+				noise_z = LowPassFilterThirdOrder(filt_sampleTime,15,noise_z,filt_noise_oneAgo.z(),filt_noise_twoAgo.z(),filt_noise_threeAgo.z());
+
+				//update required variables
+				filt_noise_threeAgo = filt_noise_twoAgo;
+				filt_noise_twoAgo = filt_noise_oneAgo;
+				filt_noise_oneAgo = cVector3d(noise_x,noise_y,noise_z);
+
+				// Inject filtered noise and update tool position
 				p_sharedData->tool->updatePoseNoisy(noise_x,noise_y,noise_z);
 
 				//p_sharedData->tool->updatePose();
 
 				updateCursor();
+
 				// compute interaction forces
 				p_sharedData->tool->computeInteractionForces();
 
@@ -208,7 +225,39 @@ void updateCursor(void) {
 
 }
 
-
+// Filter Function Third Order
+/*
+PURPOSE----------------------------------------------------------------------------------
+Low pass third order filter filters a discrete signal.
+INPUTS------------------------------------------------------------------------------------
+double T                    : sample time                                         (s)
+double f_0                  : cut-off frequency of filter      (Hz)
+cVector3d input             : current input                                       (-)
+cVector3d signalOneAgo      : last signal value (so last output)                  (-)
+cVector3d signalTwoAgo      : signal two ago                                      (-)
+cVector3d signalTwoAgo      : signal three ago                                    (-)
+OUTPUTS-----------------------------------------------------------------------------------
+cVector3d filteredSignal : the filtered signal                                    (-)
+*/
+double LowPassFilterThirdOrder(double T,
+	double f_0,
+	double input,
+	double signalOneAgo,
+	double signalTwoAgo,
+	double signalThreeAgo)
+{
+	//init variables
+	double  filteredSignal;
+	//calculate filter parameter 
+	double filterParameter = exp(-2.0*3.14159*f_0*T);
+	//calculate signal
+	filteredSignal = filterParameter*filterParameter*filterParameter*signalThreeAgo
+		- 3 * filterParameter*filterParameter*signalTwoAgo
+		+ 3 * filterParameter*signalOneAgo
+		+ (1.0 - filterParameter)*(1.0 - filterParameter)*(1.0 - filterParameter)*input;
+	//return value 
+	return filteredSignal;
+}
 
 
 // safely close the PHANTOM devices
