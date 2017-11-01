@@ -111,9 +111,9 @@ void updatePhantom(void) {
 				//filter noise signal
 				filt_sampleTime = 1/(p_sharedData->phantomFreqCounter.getFrequency());
 
-				noise_x = LowPassFilterThirdOrder(filt_sampleTime,15,noise_x,filt_noise_oneAgo.x(),filt_noise_twoAgo.x(),filt_noise_threeAgo.x());
-				noise_y = LowPassFilterThirdOrder(filt_sampleTime,15,noise_y,filt_noise_oneAgo.y(),filt_noise_twoAgo.y(),filt_noise_threeAgo.y());
-				noise_z = LowPassFilterThirdOrder(filt_sampleTime,15,noise_z,filt_noise_oneAgo.z(),filt_noise_twoAgo.z(),filt_noise_threeAgo.z());
+				noise_x = LowPassFilterThirdOrder(filt_sampleTime,F_CUTOFF,noise_x,filt_noise_oneAgo.x(),filt_noise_twoAgo.x(),filt_noise_threeAgo.x());
+				noise_y = LowPassFilterThirdOrder(filt_sampleTime,F_CUTOFF,noise_y,filt_noise_oneAgo.y(),filt_noise_twoAgo.y(),filt_noise_threeAgo.y());
+				noise_z = LowPassFilterThirdOrder(filt_sampleTime,F_CUTOFF,noise_z,filt_noise_oneAgo.z(),filt_noise_twoAgo.z(),filt_noise_threeAgo.z());
 
 				//update required variables
 				filt_noise_threeAgo = filt_noise_twoAgo;
@@ -212,16 +212,16 @@ void updateCursor(void) {
 	//This code segment maps cursor position to the "goal sphere"
 	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
-	//remove this update because we want the cursor to always be in the same plane
 	//p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
 	*/
 
 	//This code segment maps cursor position to the "proxy sphere"
+	p_sharedData->cursorPosX = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().x();
 	p_sharedData->cursorPosY = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().z();
 
 	// update cursor position
-	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+	p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
 
 }
 

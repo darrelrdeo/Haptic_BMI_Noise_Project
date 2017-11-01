@@ -40,9 +40,19 @@ using namespace std;
 // Graphics
 #define CURSOR_SIZE 0.003  // cursor radius
 #define OBJECT_SCALE_FACTOR 1
+#define WORKSPACE_RADIUS 1
+#define VIRTUAL_CURSOR_VPOS 0.11
+#define MESH_POSX -0.05
+#define MESH_POSY 0.0
+#define MESH_POSZ 0.0
 
 // Noise Generation
 #define SIGMA 0.01
+#define F_CUTOFF 15
+
+// Material Parameters
+#define FRICTION_MU 0.5 //Mu value
+#define T_STIFF_MULT 0.75 //Tissue stiffness multiplier
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {

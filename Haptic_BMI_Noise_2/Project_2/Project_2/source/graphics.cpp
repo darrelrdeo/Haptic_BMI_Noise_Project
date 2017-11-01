@@ -5,8 +5,6 @@
 using namespace chai3d;
 using namespace std;
 
-#define MESH_OBJECT
-
 static bool DEBUG_DISPLAYS = true; // if true then all debug labels will be displayed
 
 static const int Tgraphics = 20;  // minimum time between graphic updates [msec] = 50 Hz
@@ -135,7 +133,7 @@ void initGraphics(int argc, char* argv[]) {
 	p_sharedData->tool = new cToolCursor(world);
 	world->addChild(p_sharedData->tool);
 	p_sharedData->tool->setHapticDevice(p_sharedData->p_input_Phantom);
-	p_sharedData->tool->setWorkspaceRadius(0.1);
+	p_sharedData->tool->setWorkspaceRadius(WORKSPACE_RADIUS);
 	p_sharedData->tool->setRadius(CURSOR_SIZE);
 	p_sharedData->tool->m_material->setRedDark();
 	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle
@@ -152,19 +150,9 @@ void initGraphics(int argc, char* argv[]) {
 	//set constraints on object stiffness based on haptic device parameters
 	double workspaceScaleFactor = p_sharedData->tool->getWorkspaceScaleFactor();
 	double objectMaxStiffness = (p_sharedData->outputPhantom_spec.m_maxLinearStiffness)/workspaceScaleFactor;
-	
-#ifdef PLANAR 
-	// create planar surface as a rectangular mesh
-	cMesh* base = new cMesh();
-	world->addChild(base);
-	cCreateBox(base,1,1,0.1,cVector3d(0,0,-0.3),cMatrix3d(cDegToRad(0), cDegToRad(0), cDegToRad(0), C_EULER_ORDER_XYZ));
-	base->m_material->setRedCrimson();
-	base->m_material->setStiffness(0.5 * objectMaxStiffness);
-	base->createAABBCollisionDetector(CURSOR_SIZE); // build collision detection tree
-#endif
 
-#ifdef MESH_OBJECT
-	//add ZF's mesh object
+	// Load Petri Dish
+	//-------------------------------------------------------------------------------------------------------
 	p_sharedData->p_vholeCasing = new cMultiMesh();
 	world->addChild(p_sharedData->p_vholeCasing);
 
@@ -184,7 +172,7 @@ void initGraphics(int argc, char* argv[]) {
 
 	//set the position of the object
 	//p_sharedData->p_vholeCasing->setLocalPos(-1.0 * p_sharedData->p_vholeCasing->getBoundaryCenter());
-	p_sharedData->p_vholeCasing->setLocalPos(cVector3d(-0.05,0,0));
+	p_sharedData->p_vholeCasing->setLocalPos(cVector3d(MESH_POSX,MESH_POSY,MESH_POSZ));
 
     // get dimensions of object
     double size = cSub(p_sharedData->p_vholeCasing->getBoundaryMax(), p_sharedData->p_vholeCasing->getBoundaryMin()).length();
@@ -204,23 +192,25 @@ void initGraphics(int argc, char* argv[]) {
 	
     // Set the transparency of the petri dish
     p_sharedData->p_vholeCasing->setTransparencyLevel(0.5, true, true);	
-#endif
+
+	// Load Hole Samples
+	//-------------------------------------------------------------------------------------------------------
 
 	//Generate mesh objects different hole configs
 	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_n40/Tissue_n40_n20.obj",
-						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
 	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[1], "../../bin/resources/X_n20/Tissue_n20_p40.obj",
-						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
 	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[2], "../../bin/resources/X_p0/Tissue_p0_n20.obj",
-						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
 	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[3], "../../bin/resources/X_p20/Tissue_p20_p20.obj",
-						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
 	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[4], "../../bin/resources/X_p40/Tissue_p40_n20.obj",
-						cVector3d(0, 0, 0.003), objectMaxStiffness*0.75,true);
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
 
 	//Generate mesh for the cover
 	CreateAndFillMeshVHole(p_sharedData->p_vholeCover,"../../bin/resources/Tissue_NoHole.obj",
-						cVector3d(0,0,0.003), objectMaxStiffness*0.75,false);
+						cVector3d(0,0,0.003), objectMaxStiffness*T_STIFF_MULT,false);
 
     //p_sharedData->p_vholeSurface[1]->setTransparencyLevel(1.0, true, true);
 	//p_sharedData->p_vholeSurface[1]->setGhostEnabled(false);
@@ -234,18 +224,21 @@ void initGraphics(int argc, char* argv[]) {
     phantomRate = new cLabel(font);
     trial = new cLabel(font);
     message = new cLabel(font);
-	XForce = new cLabel(font);
-	YForce = new cLabel(font);
-	ZForce = new cLabel(font);
-	cursorPosX = new cLabel(font);
-	cursorPosY = new cLabel(font);
-	cursorPosZ = new cLabel(font);
 	experimentState = new cLabel(font);
 	blockType = new cLabel(font);
+
 	input_phantomPosX = new cLabel(font);
 	input_phantomPosY = new cLabel(font);
 	input_phantomPosZ = new cLabel(font);
 
+	XForce = new cLabel(font);
+	YForce = new cLabel(font);
+	ZForce = new cLabel(font);
+
+	cursorPosX = new cLabel(font);
+	cursorPosY = new cLabel(font);
+	cursorPosZ = new cLabel(font);
+/*
 	input_phantomVelX = new cLabel(font);
 	input_phantomVelY = new cLabel(font);
 	input_phantomVelZ = new cLabel(font);
@@ -261,8 +254,10 @@ void initGraphics(int argc, char* argv[]) {
 	cursorVelX = new cLabel(font);
 	cursorVelY = new cLabel(font);
 	cursorVelZ = new cLabel(font);
+*/
 
 	// add labels to frontLayer
+	//-----------------------------------------------
     camera->m_frontLayer->addChild(opMode);
     camera->m_frontLayer->addChild(input_device);
 	camera->m_frontLayer->addChild(output_device);
@@ -275,23 +270,23 @@ void initGraphics(int argc, char* argv[]) {
 	camera->m_frontLayer->addChild(cursorPosX);
 	camera->m_frontLayer->addChild(cursorPosY);
 	camera->m_frontLayer->addChild(cursorPosZ);
-	camera->m_frontLayer->addChild(cursorVelX);
-	camera->m_frontLayer->addChild(cursorVelY);
-	camera->m_frontLayer->addChild(cursorVelZ);
-
 	camera->m_frontLayer->addChild(experimentState);
 	camera->m_frontLayer->addChild(blockType);
 	camera->m_frontLayer->addChild(input_phantomPosX);
 	camera->m_frontLayer->addChild(input_phantomPosY);
 	camera->m_frontLayer->addChild(input_phantomPosZ);
-
+	/*
 	camera->m_frontLayer->addChild(output_phantomPosX);
 	camera->m_frontLayer->addChild(output_phantomPosY);
 	camera->m_frontLayer->addChild(output_phantomPosZ);
-
 	camera->m_frontLayer->addChild(input_phantomVelX);
 	camera->m_frontLayer->addChild(input_phantomVelY);
 	camera->m_frontLayer->addChild(input_phantomVelY);
+	camera->m_frontLayer->addChild(cursorVelX);
+	camera->m_frontLayer->addChild(cursorVelY);
+	camera->m_frontLayer->addChild(cursorVelZ);
+	*/
+
 }
 
 // update and re-render the graphics
@@ -338,26 +333,23 @@ void updateGraphics(void) {
     phantomRate->setString("PHANTOM: " + to_string(static_cast<long long>(p_sharedData->phantomFreqCounter.getFrequency())));
 
     trial->setString("Trial: " + to_string(static_cast<long long>(p_sharedData->trialNum)));
+	experimentState->setString("Experiment State: " + p_sharedData->experimentStateName);
+	blockType->setString("Block Name: " + p_sharedData->blockName);
+
 	XForce->setString("XForce Des: " + to_string(static_cast<long double>(p_sharedData->outputPhantomForce_X)));
 	YForce->setString("YForce Des: " + to_string(static_cast<long double>(p_sharedData->outputPhantomForce_Y)));
 	ZForce->setString("ZForce Des: " + to_string(static_cast<long double>(p_sharedData->outputPhantomForce_Z)));
+
     cursorPosX->setString("CursorPos X: " + to_string(static_cast<long double>(p_sharedData->cursorPosX)));
 	cursorPosY->setString("CursorPos Y: " + to_string(static_cast<long double>(p_sharedData->cursorPosY)));
 	cursorPosZ->setString("CursorPos Z: " + to_string(static_cast<long double>(p_sharedData->cursorPosZ)));
-	experimentState->setString("Experiment State: " + p_sharedData->experimentStateName);
-	blockType->setString("Block Name: " + p_sharedData->blockName);
-	cursorVelX->setString("cursorVelX: " + to_string(static_cast<long double>(p_sharedData->cursorVelX)));
-	cursorVelY->setString("cursorVelY: " + to_string(static_cast<long double>(p_sharedData->cursorVelY)));
-	cursorVelZ->setString("cursorVelZ: " + to_string(static_cast<long double>(p_sharedData->cursorVelZ)));
 
 	input_phantomPosX->setString("Input Phantom Pos X: " + to_string(static_cast<long double>(p_sharedData->inputPhantomPosX)));
 	input_phantomPosY->setString("Input Phantom Pos Y: " + to_string(static_cast<long double>(p_sharedData->inputPhantomPosY)));
 	input_phantomPosZ->setString("Input Phantom Pos Z: " + to_string(static_cast<long double>(p_sharedData->inputPhantomPosZ)));
 
-	input_phantomVelX->setString("Input Phantom Vel X: " + to_string(static_cast<long double>(p_sharedData->inputPhantomVelX)));
-	input_phantomVelY->setString("Input Phantom Vel Y: " + to_string(static_cast<long double>(p_sharedData->inputPhantomVelY)));
-	input_phantomVelZ->setString("Input Phantom Vel Z: " + to_string(static_cast<long double>(p_sharedData->inputPhantomVelZ)));
 
+	/*
 	output_phantomPosX->setString("Output Phantom Pos X: " + to_string(static_cast<long double>(p_sharedData->outputPhantomPosX)));
 	output_phantomPosY->setString("Output Phantom Pos Y: " + to_string(static_cast<long double>(p_sharedData->outputPhantomPosY)));
 	output_phantomPosZ->setString("Output Phantom Pos Z: " + to_string(static_cast<long double>(p_sharedData->outputPhantomPosZ)));
@@ -366,7 +358,14 @@ void updateGraphics(void) {
 	output_phantomVelY->setString("Output Phantom Vel Y: " + to_string(static_cast<long double>(p_sharedData->outputPhantomVelY)));
 	output_phantomVelZ->setString("Output Phantom Vel Z: " + to_string(static_cast<long double>(p_sharedData->outputPhantomVelZ)));
 
+	input_phantomVelX->setString("Input Phantom Vel X: " + to_string(static_cast<long double>(p_sharedData->inputPhantomVelX)));
+	input_phantomVelY->setString("Input Phantom Vel Y: " + to_string(static_cast<long double>(p_sharedData->inputPhantomVelY)));
+	input_phantomVelZ->setString("Input Phantom Vel Z: " + to_string(static_cast<long double>(p_sharedData->inputPhantomVelZ)));
 
+	cursorVelX->setString("cursorVelX: " + to_string(static_cast<long double>(p_sharedData->cursorVelX)));
+	cursorVelY->setString("cursorVelY: " + to_string(static_cast<long double>(p_sharedData->cursorVelY)));
+	cursorVelZ->setString("cursorVelZ: " + to_string(static_cast<long double>(p_sharedData->cursorVelZ)));
+	*/
 
     opMode->setLocalPos(10, (int) (windowH - 1.0 * opMode->getHeight()), 0);
     input_device->setLocalPos(10, (int) (windowH - 2.0 * input_device->getHeight()), 0);
@@ -381,13 +380,14 @@ void updateGraphics(void) {
 	cursorPosY->setLocalPos(10, (int) (windowH - 9.0 * cursorPosY->getHeight()),0);
 	cursorPosZ->setLocalPos(10, (int) (windowH - 10.0 * cursorPosZ->getHeight()),0);
 
+	input_phantomPosX->setLocalPos(10, (int) (windowH - 11.0 * input_phantomPosX->getHeight()),0);
+	input_phantomPosY->setLocalPos(10, (int) (windowH - 12.0 * input_phantomPosY->getHeight()),0);
+	input_phantomPosZ->setLocalPos(10, (int) (windowH - 13.0 * input_phantomPosZ->getHeight()),0);
+
+	/*
 	cursorVelX->setLocalPos(10, (int) (windowH - 11.0 * cursorVelX->getHeight()),0);
 	cursorVelY->setLocalPos(10, (int) (windowH - 12.0 * cursorVelY->getHeight()),0);
 	cursorVelZ->setLocalPos(10, (int) (windowH - 13.0 * cursorVelZ->getHeight()),0);
-
-	input_phantomPosX->setLocalPos(10, (int) (windowH - 14.0 * input_phantomPosX->getHeight()),0);
-	input_phantomPosY->setLocalPos(10, (int) (windowH - 15.0 * input_phantomPosY->getHeight()),0);
-	input_phantomPosZ->setLocalPos(10, (int) (windowH - 16.0 * input_phantomPosZ->getHeight()),0);
 
 	output_phantomPosX->setLocalPos(10, (int) (windowH - 17.0 * output_phantomPosX->getHeight()),0);
 	output_phantomPosY->setLocalPos(10, (int) (windowH - 18.0 * output_phantomPosY->getHeight()),0);
@@ -396,6 +396,7 @@ void updateGraphics(void) {
 	input_phantomVelX->setLocalPos(10, (int) (windowH - 20.0 * input_phantomVelX->getHeight()),0);
 	input_phantomVelY->setLocalPos(10, (int) (windowH - 21.0 * input_phantomVelY->getHeight()),0);
 	input_phantomVelZ->setLocalPos(10, (int) (windowH - 22.0 * input_phantomVelZ->getHeight()),0);
+	*/
 
 	trial->setLocalPos((int) (windowW - trial->getWidth() - 10), (int) (windowH - 2.0 * opMode->getHeight()), 0);
 	blockType->setLocalPos((int) (windowW - blockType->getWidth() - 10), (int) (0), 0);
@@ -406,21 +407,24 @@ void updateGraphics(void) {
     
 	opMode->setShowEnabled(DEBUG_DISPLAYS);
     input_device->setShowEnabled(DEBUG_DISPLAYS);
-    XForce->setShowEnabled(DEBUG_DISPLAYS);
-	YForce->setShowEnabled(DEBUG_DISPLAYS);
-	ZForce->setShowEnabled(DEBUG_DISPLAYS);
-	cursorPosX->setShowEnabled(DEBUG_DISPLAYS);
-	cursorPosY->setShowEnabled(DEBUG_DISPLAYS);
-	cursorPosZ->setShowEnabled(DEBUG_DISPLAYS);
 	phantomRate->setShowEnabled(DEBUG_DISPLAYS);
 	trial->setShowEnabled(DEBUG_DISPLAYS);
 	input_phantomPosX->setShowEnabled(DEBUG_DISPLAYS);
 	input_phantomPosY->setShowEnabled(DEBUG_DISPLAYS);
 	input_phantomPosZ->setShowEnabled(DEBUG_DISPLAYS);
-    input_phantomVelX->setShowEnabled(DEBUG_DISPLAYS);
+	XForce->setShowEnabled(DEBUG_DISPLAYS);
+	YForce->setShowEnabled(DEBUG_DISPLAYS);
+	ZForce->setShowEnabled(DEBUG_DISPLAYS);
+	cursorPosX->setShowEnabled(DEBUG_DISPLAYS);
+	cursorPosY->setShowEnabled(DEBUG_DISPLAYS);
+	cursorPosZ->setShowEnabled(DEBUG_DISPLAYS);
+	message->setShowEnabled(DEBUG_DISPLAYS);
+
+	/*
+	input_phantomVelX->setShowEnabled(DEBUG_DISPLAYS);
 	input_phantomVelY->setShowEnabled(DEBUG_DISPLAYS);
 	input_phantomVelZ->setShowEnabled(DEBUG_DISPLAYS);
-	output_phantomPosX->setShowEnabled(DEBUG_DISPLAYS);
+    output_phantomPosX->setShowEnabled(DEBUG_DISPLAYS);
 	output_phantomPosY->setShowEnabled(DEBUG_DISPLAYS);
 	output_phantomPosZ->setShowEnabled(DEBUG_DISPLAYS);
     output_phantomVelX->setShowEnabled(DEBUG_DISPLAYS);
@@ -429,8 +433,8 @@ void updateGraphics(void) {
 	cursorVelX->setShowEnabled(DEBUG_DISPLAYS);
 	cursorVelY->setShowEnabled(DEBUG_DISPLAYS);
 	cursorVelZ->setShowEnabled(DEBUG_DISPLAYS);
-	message->setShowEnabled(DEBUG_DISPLAYS);
-    
+	*/
+
 	if(p_sharedData->experimentStateNumber == EXPERIMENT) message->setShowEnabled(false);
 
     // render and (smoothly, via buffer swapping) display world
@@ -528,7 +532,7 @@ void CreateAndFillMeshVHole(cMultiMesh* &a_mesh, const char* a_fileName, cVector
 
 	// set the position of the object at the center of the world
     //a_mesh->setLocalPos(-1.0 * p_sharedData->p_vholeCasing->getBoundaryCenter()+a_translation);
-	a_mesh->setLocalPos(cVector3d(-0.05,0,0)+a_translation);
+	a_mesh->setLocalPos(cVector3d(MESH_POSX,MESH_POSY,MESH_POSZ)+a_translation);
 
     // get dimensions of object
     double size = cSub(a_mesh->getBoundaryMax(), a_mesh->getBoundaryMin()).length();
@@ -551,7 +555,7 @@ void CreateAndFillMeshVHole(cMultiMesh* &a_mesh, const char* a_fileName, cVector
     // define a default stiffness for the object
     a_mesh->setStiffness(a_stiffness,true);
 	// define a default friction for the object
-	a_mesh->setFriction(0.5,0.5,true);
+	a_mesh->setFriction(FRICTION_MU,FRICTION_MU,true);
 
 
 	// Set the transparency of the petri dish
