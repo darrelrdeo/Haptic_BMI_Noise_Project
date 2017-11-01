@@ -184,7 +184,7 @@ void initGraphics(int argc, char* argv[]) {
 
 	//set the position of the object
 	//p_sharedData->p_vholeCasing->setLocalPos(-1.0 * p_sharedData->p_vholeCasing->getBoundaryCenter());
-	p_sharedData->p_vholeCasing->setLocalPos(cVector3d(0,0,0));
+	p_sharedData->p_vholeCasing->setLocalPos(cVector3d(-0.05,0,0));
 
     // get dimensions of object
     double size = cSub(p_sharedData->p_vholeCasing->getBoundaryMax(), p_sharedData->p_vholeCasing->getBoundaryMin()).length();
@@ -528,7 +528,7 @@ void CreateAndFillMeshVHole(cMultiMesh* &a_mesh, const char* a_fileName, cVector
 
 	// set the position of the object at the center of the world
     //a_mesh->setLocalPos(-1.0 * p_sharedData->p_vholeCasing->getBoundaryCenter()+a_translation);
-	a_mesh->setLocalPos(cVector3d(0,0,0)+a_translation);
+	a_mesh->setLocalPos(cVector3d(-0.05,0,0)+a_translation);
 
     // get dimensions of object
     double size = cSub(a_mesh->getBoundaryMax(), a_mesh->getBoundaryMin()).length();
@@ -550,6 +550,9 @@ void CreateAndFillMeshVHole(cMultiMesh* &a_mesh, const char* a_fileName, cVector
 
     // define a default stiffness for the object
     a_mesh->setStiffness(a_stiffness,true);
+	// define a default friction for the object
+	a_mesh->setFriction(0.5,0.5,true);
+
 
 	// Set the transparency of the petri dish
     a_mesh->setTransparencyLevel(0.0, true, true);
