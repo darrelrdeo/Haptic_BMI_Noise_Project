@@ -121,9 +121,10 @@ void updatePhantom(void) {
 				filt_noise_oneAgo = cVector3d(noise_x,noise_y,noise_z);
 
 				// Inject filtered noise and update tool position
-				//p_sharedData->tool->updatePoseNoisy(noise_x,noise_y,noise_z);
-
-				p_sharedData->tool->updatePose();
+				if (p_sharedData->noise_toggle)
+					{p_sharedData->tool->updatePoseNoisy(noise_x,noise_y,noise_z);}
+				else
+					{p_sharedData->tool->updatePose();}
 
 				updateCursor();
 

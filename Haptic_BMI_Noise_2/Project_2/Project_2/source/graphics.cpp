@@ -108,7 +108,7 @@ void initGraphics(int argc, char* argv[]) {
     camera = new cCamera(world);
     world->addChild(camera);
 
-    camera->set(cVector3d (0.5, 0.0, -0.003),   // camera position
+    camera->set(cVector3d (1.0, 0.0, -0.003),   // camera position
                 cVector3d (0.0, 0.0, 0.0),   // look at center
                 cVector3d (0.0, 0.0, 1.0));  // "up" vector
 				
@@ -135,9 +135,9 @@ void initGraphics(int argc, char* argv[]) {
 	p_sharedData->tool->setHapticDevice(p_sharedData->p_input_Phantom);
 	p_sharedData->tool->setWorkspaceRadius(WORKSPACE_RADIUS);
 	p_sharedData->tool->setRadius(CURSOR_SIZE);
-	p_sharedData->tool->m_material->setRedDark();
+	p_sharedData->tool->m_material->setGreenChartreuse();
 	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle
-	p_sharedData->tool->m_hapticPoint->m_sphereProxy->m_material->setRedCrimson();
+	p_sharedData->tool->m_hapticPoint->m_sphereProxy->m_material->setGreenChartreuse();
 
 	//create virtual cursor that shadows the haptic tool
 	p_sharedData->vCursor= new cShapeSphere(CURSOR_SIZE);
@@ -468,43 +468,73 @@ void resizeWindow(int W, int H) {
 
 // dictates response to a keypress within the graphics window
 void respToKey(unsigned char key, int x, int y) {
-    
-    switch (key) {
-        
-        
-        // f/F = fullscreen toggle
-        case 'f':
-        case 'F':
-            
-            if (fullscreen) {
-                windowPosX = glutGet(GLUT_INIT_WINDOW_X);
-                windowPosY = glutGet(GLUT_INIT_WINDOW_Y);
-                windowW = glutGet(GLUT_INIT_WINDOW_WIDTH);
-                windowH = glutGet(GLUT_INIT_WINDOW_HEIGHT);
-                glutPositionWindow(windowPosX, windowPosY);
-                glutReshapeWindow(windowW, windowH);
-                fullscreen = false;
-            } else {
-                glutFullScreen();
-                fullscreen = true;
-            }
-            break;
 
+	// option ESC: exit
+    if ((key == 27) || (key == 'x'))
+    {
+        // close everything
+        close();
 
-
-        
-        // q/Q = quit, 27 = ESC key
-        case 'q':
-        case 'Q':
-        case 27:
-            
-            close();
-            exit(0);
-            break;
-            
-        default:
-            break;
+        // exit application
+        exit(0);
     }
+
+    // option f: turn off friction
+    if (key == 'd')
+    {	
+		for (int c = 0; c<5 ; c++ )
+		{
+			if (p_sharedData->p_vholeSurface[c]->m_material->getStaticFriction()>0 || p_sharedData->p_vholeSurface[c]->m_material->getDynamicFriction()>0)
+				{p_sharedData->p_vholeSurface[c]->setFriction(0,0,true);}
+			else
+				{p_sharedData->p_vholeSurface[c]->setFriction(FRICTION_MU,FRICTION_MU,true);}
+		}
+	}
+
+    // option n: turn off noise
+    if (key == 'n')
+    {
+		if (p_sharedData->noise_toggle)
+			{p_sharedData->noise_toggle = false;}
+		else
+			{p_sharedData->noise_toggle = true;}
+    }
+
+	// option c: toggle cover
+	if (key == 'c')
+    {
+		if(p_sharedData->p_vholeCover->getGhostEnabled())
+			{
+				p_sharedData->p_vholeCover->setGhostEnabled(false);
+				p_sharedData->p_vholeCover->setTransparencyLevel(1.0,true,true);
+		
+		}
+		else
+			{
+				p_sharedData->p_vholeCover->setGhostEnabled(true);
+				p_sharedData->p_vholeCover->setTransparencyLevel(0.0,true,true);
+		}
+
+    }
+
+	if (key == 'f')
+    {
+        if (fullscreen)
+        {
+            windowPosX = glutGet(GLUT_INIT_WINDOW_X);
+            windowPosY = glutGet(GLUT_INIT_WINDOW_Y);
+            windowW = glutGet(GLUT_INIT_WINDOW_WIDTH);
+            windowH = glutGet(GLUT_INIT_WINDOW_HEIGHT);
+            glutPositionWindow(windowPosX, windowPosY);
+            glutReshapeWindow(windowW, windowH);
+            fullscreen = false;
+        }
+        else
+        {
+            glutFullScreen();
+            fullscreen = true;
+        }
+	}
     
 }
 
@@ -584,3 +614,4 @@ void close(void) {
     
 
 }
+

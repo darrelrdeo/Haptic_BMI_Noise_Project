@@ -23,6 +23,9 @@ void setup(void) {
 	p_sharedData->simulationRunning = false; // selected during setup/initialization
 	p_sharedData->simulationFinished = false;// executed by experiment
 
+	// debug toggle
+	p_sharedData->noise_toggle =  true;
+
 	// input devices 
 	p_sharedData->input_device = 0;
 
