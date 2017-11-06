@@ -38,7 +38,7 @@ using namespace std;
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
 
 // Graphics
-#define CURSOR_SIZE 0.01 // cursor radius
+#define CURSOR_SIZE 0.003 // cursor radius
 #define OBJECT_SCALE_FACTOR 3
 #define WORKSPACE_RADIUS 0.5
 #define VIRTUAL_CURSOR_VPOS 0.11
@@ -47,8 +47,15 @@ using namespace std;
 #define MESH_POSZ 0.0
 
 // Noise Generation
-#define SIGMA 0.01
-#define F_CUTOFF 25
+#define SIGMA 0.015
+#define C_INTERVAL 0.077274879106467 // this value is half the range that contains 99% of the values of the distribution at sigma 0.03 , please recalculate this if you change sigma
+#define B0 0.000095442508423
+#define B1 0.000286327525271
+#define B2 0.000286327525271
+#define B3 0.000095442508423
+#define A0 -2.811573677324689
+#define A1 2.640483492778340
+#define	A2 -0.8281462753862610
 
 // Material Parameters
 #define FRICTION_MU 0.3 //Mu value

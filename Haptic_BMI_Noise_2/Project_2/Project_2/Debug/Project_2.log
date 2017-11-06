@@ -1,4 +1,4 @@
-﻿Build started 11/1/2017 10:32:25 AM.
+﻿Build started 11/6/2017 1:57:05 PM.
      1>Project "C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\Project_2.vcxproj" on node 3 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Project_2.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -50,12 +50,12 @@
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(107): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(108): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(109): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(114): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(115): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(116): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(117): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(118): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(138): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(138): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(138): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
          Main.cpp
      1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
@@ -83,4 +83,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:11.51
+Time Elapsed 00:00:12.02
