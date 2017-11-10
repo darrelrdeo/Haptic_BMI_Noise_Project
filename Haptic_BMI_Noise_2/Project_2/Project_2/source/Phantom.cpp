@@ -32,17 +32,10 @@ float fn[128];
 float noise_x,noise_y,noise_z;
 
 //filter variables
-double filt_noise_x;
-double filt_noise_y;
-double filt_noise_z;
-double output_buff_x[3] = {0,0,0};
-double output_buff_y[3] = {0,0,0};
-double output_buff_z[3] = {0,0,0};
-double input_buff_x[3] = {0,0,0};
-double input_buff_y[3] = {0,0,0};
-double input_buff_z[3] = {0,0,0};
-double a[3] = {A0,A1,A2};
-double b[4] = {B0,B1,B2,B3};
+double filt_sampleTime = 0.001;
+cVector3d filt_noise_oneAgo = 0;
+cVector3d filt_noise_twoAgo = 0;
+cVector3d filt_noise_threeAgo = 0;
 
 // thread timestamp vars
 static DWORD currTime = 0;
@@ -70,7 +63,6 @@ void initPhantom(void) {
 	//initialize random seed
 	rand_seed = (uint32_t)cpu_time;
 	printf("time seed = %ul \n", rand_seed);
-
 
 #ifdef DEBUG_FLAG
     printf("\n Phantoms initialized!\n");
@@ -110,43 +102,34 @@ void updatePhantom(void) {
 			// if the input device is a phantom then perform updates for input, otherwise skip
             if (p_sharedData->input_device == INPUT_PHANTOM) {
 				
-				
 				//compute noise
 				r4_nor_setup(kn, fn, wn);
 				noise_x = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 				noise_y = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 				noise_z = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 
-				//pass noise through filter
-				filt_noise_x = LowPassFilterThirdOrder(a,b,noise_x,output_buff_x,input_buff_x);
-				filt_noise_y = LowPassFilterThirdOrder(a,b,noise_y,output_buff_y,input_buff_y);
-				filt_noise_z = LowPassFilterThirdOrder(a,b,noise_z,output_buff_z,input_buff_z);
+				//filter noise signal
+				filt_sampleTime = 1/(p_sharedData->phantomFreqCounter.getFrequency());
+
+				noise_x = LowPassFilterThirdOrder(filt_sampleTime,F_CUTOFF,noise_x,filt_noise_oneAgo.x(),filt_noise_twoAgo.x(),filt_noise_threeAgo.x());
+				noise_y = LowPassFilterThirdOrder(filt_sampleTime,F_CUTOFF,noise_y,filt_noise_oneAgo.y(),filt_noise_twoAgo.y(),filt_noise_threeAgo.y());
+				noise_z = LowPassFilterThirdOrder(filt_sampleTime,F_CUTOFF,noise_z,filt_noise_oneAgo.z(),filt_noise_twoAgo.z(),filt_noise_threeAgo.z());
 
 				//update required variables
-
-				input_buff_x[2] = input_buff_x[1]; input_buff_x[1] = input_buff_x[0]; input_buff_x[0] = noise_x;
-				input_buff_y[2] = input_buff_y[1]; input_buff_y[1] = input_buff_y[0]; input_buff_y[0] = noise_y;
-				input_buff_z[2] = input_buff_z[1]; input_buff_z[1] = input_buff_z[0]; input_buff_z[0] = noise_z;
-
-				output_buff_x[2] = output_buff_x[1]; output_buff_x[1] = output_buff_x[0]; output_buff_x[0] = filt_noise_x;
-				output_buff_y[2] = output_buff_y[1]; output_buff_y[1] = output_buff_y[0]; output_buff_y[0] = filt_noise_y;
-				output_buff_z[2] = output_buff_z[1]; output_buff_z[1] = output_buff_z[0]; output_buff_z[0] = filt_noise_z;
-
+				filt_noise_threeAgo = filt_noise_twoAgo;
+				filt_noise_twoAgo = filt_noise_oneAgo;
+				filt_noise_oneAgo = cVector3d(noise_x,noise_y,noise_z);
 
 				// Inject filtered noise and update tool position
 				if (p_sharedData->noise_toggle)
-					{p_sharedData->tool->updatePoseNoisy(filt_noise_x,filt_noise_y,filt_noise_z);}
+					{p_sharedData->tool->updatePoseNoisy(noise_x,noise_y,noise_z);}
 				else
 					{p_sharedData->tool->updatePose();}
 
-				// once we know the proxy-goal vector we can check for saturation,
-				// then we can force the cursor position back 
-				//p_sharedData->tool->desaturate(); 
-				// recalulate the forces after we shift the cursor position.
-				p_sharedData->tool->computeInteractionForces();
-				
+				updateCursor();
 
-				updateCursor(); //updates the virtual cursor position
+				// compute interaction forces
+				p_sharedData->tool->computeInteractionForces();
 
 				// store locally computed interaction forces
 				cVector3d computedLocalForce = p_sharedData->tool->getDeviceLocalForce();
@@ -183,15 +166,15 @@ void updatePhantom(void) {
 			// if the output device is a phantom then perform updates for output, otherwise skip
 			if (p_sharedData->output_device == OUTPUT_PHANTOM) {
 
-				// render the appropriate forces through interaction with virtual environment (these desired forces should be computed in experiment thread)
-				cVector3d desiredForce = cVector3d(p_sharedData->outputPhantomForce_Desired_X, p_sharedData->outputPhantomForce_Desired_Y, p_sharedData->outputPhantomForce_Desired_Z);
-				p_sharedData->p_output_Phantom->setForce(desiredForce);
-
 				// get current forces output by OUTPUT PHANTOM device
 				p_sharedData->p_output_Phantom->getForce(output_force);
 				p_sharedData->outputPhantomForce_X = output_force.x();
 				p_sharedData->outputPhantomForce_Y = output_force.y();
 				p_sharedData->outputPhantomForce_Z = output_force.z();
+
+				// render the appropriate forces through interaction with virtual environment (these desired forces should be computed in experiment thread)
+				cVector3d desiredForce = cVector3d(p_sharedData->outputPhantomForce_Desired_X, p_sharedData->outputPhantomForce_Desired_Y, p_sharedData->outputPhantomForce_Desired_Z);
+				p_sharedData->p_output_Phantom->setForce(desiredForce);
 
 				// get OUTPUT PHANTOM position and velocity vectors
                 p_sharedData->p_output_Phantom->getPosition(output_pos);
@@ -226,23 +209,21 @@ void updatePhantom(void) {
 void updateCursor(void) {
 	// position-position mapping between input phantom and virtual cursor
 	
-	
+	/*
 	//This code segment maps cursor position to the "goal sphere"
 	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
-	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
-	
+	//p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
+	*/
 
-	/*
 	//This code segment maps cursor position to the "proxy sphere"
 	p_sharedData->cursorPosX = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().x();
 	p_sharedData->cursorPosY = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().z();
-	*/
 
 	// update cursor position
-	//p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
-	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+	p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+
 }
 
 // Filter Function Third Order
@@ -250,28 +231,31 @@ void updateCursor(void) {
 PURPOSE----------------------------------------------------------------------------------
 Low pass third order filter filters a discrete signal.
 INPUTS------------------------------------------------------------------------------------
-double a[3]                 : output coefficients for butterworth filter from MATLAB
-double b[4]                 : input coefficients for butterworth filter from MATLAB
-double input             : input vector at current time t                      
-double output_buff[3]	: previous outputs at t-1,t-2,t-3		                  
-double input_buff[3]		: previous inputs  at t-1,t-2,t-3                                  
-
+double T                    : sample time                                         (s)
+double f_0                  : cut-off frequency of filter      (Hz)
+cVector3d input             : current input                                       (-)
+cVector3d signalOneAgo      : last signal value (so last output)                  (-)
+cVector3d signalTwoAgo      : signal two ago                                      (-)
+cVector3d signalTwoAgo      : signal three ago                                    (-)
 OUTPUTS-----------------------------------------------------------------------------------
 cVector3d filteredSignal : the filtered signal                                    (-)
 */
-double LowPassFilterThirdOrder(
-	double a[3],
-	double b[4],
+double LowPassFilterThirdOrder(double T,
+	double f_0,
 	double input,
-	double output_buff[3],
-	double input_buff[3])
+	double signalOneAgo,
+	double signalTwoAgo,
+	double signalThreeAgo)
 {
 	//init variables
 	double  filteredSignal;
-
-	filteredSignal =	input*b[0] + input_buff[0] * b[1] + input_buff[1] * b[2] + input_buff[2] * b[3]
-						- output_buff[0] * a[0] - output_buff[1]*a[1] - output_buff[2]*a[2];
-
+	//calculate filter parameter 
+	double filterParameter = exp(-2.0*3.14159*f_0*T);
+	//calculate signal
+	filteredSignal = filterParameter*filterParameter*filterParameter*signalThreeAgo
+		- 3 * filterParameter*filterParameter*signalTwoAgo
+		+ 3 * filterParameter*signalOneAgo
+		+ (1.0 - filterParameter)*(1.0 - filterParameter)*(1.0 - filterParameter)*input;
 	//return value 
 	return filteredSignal;
 }

@@ -364,16 +364,13 @@ void cGenericTool::updatePose()
     // compute local position - adjust for tool workspace scale factor
     m_deviceLocalPos = m_workspaceScaleFactor * devicePos;
 
-    // compute local rotation
-    m_deviceLocalRot = deviceRot; 
-
-	// update the position and orientation of the tool image
-    updateToolImagePosition();
-
     // compute global position in world coordinates
     cVector3d pos;
     m_globalRot.mulr(m_deviceLocalPos, pos);
     pos.addr(m_globalPos, m_deviceGlobalPos);
+
+    // compute local rotation
+    m_deviceLocalRot = deviceRot; 
 
     // compute global rotation
     m_deviceLocalRot.mulr(m_globalRot, m_deviceGlobalRot);
@@ -396,7 +393,8 @@ void cGenericTool::updatePose()
     // read user switch status
     m_userSwitch0 = getUserSwitch(0);
 
-
+    // update the position and orientation of the tool image
+    updateToolImagePosition();
 }
 
 
@@ -726,6 +724,9 @@ void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
     m_hapticDevice->getLinearVelocity(deviceLinVel);
     m_hapticDevice->getAngularVelocity(deviceAngVel);
 
+	//inject noise
+	devicePos = devicePos+noise_vector;
+
     //////////////////////////////////////////////////////////////////////
     // update information inside tool
     //////////////////////////////////////////////////////////////////////
@@ -737,6 +738,9 @@ void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
     cVector3d pos;
     m_globalRot.mulr(m_deviceLocalPos, pos);
     pos.addr(m_globalPos, m_deviceGlobalPos);
+
+    // compute local rotation
+    m_deviceLocalRot = deviceRot; 
 
     // compute global rotation
     m_deviceLocalRot.mulr(m_globalRot, m_deviceGlobalRot);
@@ -759,88 +763,11 @@ void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
     // read user switch status
     m_userSwitch0 = getUserSwitch(0);
 
-	 // compute local rotation
-    m_deviceLocalRot = deviceRot; 
-
-	// we check our saturation condition and desaturate the position if needed
-	desaturate();
-
-	//inject noise
-	 m_deviceGlobalPos = m_deviceGlobalPos+m_workspaceScaleFactor*noise_vector;
-
-	// update the position and orientation of the tool image
+    // update the position and orientation of the tool image
     updateToolImagePosition();
 
-}
-
-//--------------------------------------------------------------------------------------
-// Desaturation method
-// This method finds the unit vector between the goal and the proxy after the tool image has been updated.
-// It then finds finds the required offset required to move the goal position to the limit of position in which force saturation begins
-
-// The goal position used to calculate forces is thus shifted to the position that only hits the saturation limit at the maximum noise displacement.
-
-
-//--------------------------------------------------------------------------------------
-
-void cGenericTool::desaturate()
-{	
-	
-
-	//get positions of goal_position and proxy position
-	cVector3d goal_pos = m_deviceGlobalPos;
-	cVector3d proxy_pos = m_hapticPoints[0]->m_algorithmFingerProxy->computeProxy(m_deviceGlobalPos);
-	//cVector3d proxy_pos =m_hapticPoints[0]->getLocalPosProxy();
-
-	cVector3d v, v_hat; //goal-proxy distance vector, and its unit vector
-	cVector3d v_sat; // saturated goal-proxy vector
-	cVector3d v_adj; // adjustment vector to desaturate the tool
-
-	goal_pos.subr(proxy_pos,v); // find the vector of goal->proxy, store it in vector v
-
-	v.normalizer(v_hat); // find unit vector of v and store it in v_hat
-
-	//note: we can pull the average material stiffness from the collision events and use that to as k_mat
-
-    double stiffness = 0.0;
-	int coll_num = m_hapticPoints[0]->getNumCollisionEvents();
-
-    for (unsigned int i=0; i<coll_num; i++)
-    {
-        // compute stiffness
-        stiffness += ( m_hapticPoints[0]->getCollisionEvent(i)->m_object->m_material->getStiffness() );
-    }
-
-    if (coll_num > 0)
-    {
-        double scale = 1.0/(double)coll_num;
-        stiffness *= scale;
-    }
-
-
-	double f_max = m_hapticDevice->getSpecifications().m_maxLinearForce;
-	
-
-	v_hat.mulr((f_max/stiffness),v_sat); //multiply v_hat by the scalar magnitude of the max saturation displacement
-
-	//printf("dmax %f stiffness %f \n", f_max, stiffness);
-	
-	cVector3d error;
-	error.zero();
-	v_hat.mulr(0.06,error);
-
-	// note to add conditional to check if we are not in saturation zone, only desaturate if needed!
-	
-
-	if(v.length()>v_sat.length())
-	{
-		v.subr(v_sat,v_adj);
-		v_adj.add(error);
-		m_deviceGlobalPos.sub(v_adj);
-	}
 
 }
-
 
 
 //------------------------------------------------------------------------------

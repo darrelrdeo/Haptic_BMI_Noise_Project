@@ -111,8 +111,6 @@ public:
     //! Calculate interaction forces between device and meshes.
     virtual cVector3d computeForces(const cVector3d& a_toolPos, const cVector3d& a_toolVel);
 
-	virtual cVector3d cAlgorithmFingerProxy::computeProxy(const cVector3d& a_toolPos);
-
 
     //----------------------------------------------------------------------
     // METHODS - GETTER AND SETTER FUNCTIONS:

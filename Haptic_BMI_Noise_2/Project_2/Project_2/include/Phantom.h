@@ -10,12 +10,12 @@ void linkSharedDataToPhantom(shared_data& sharedData);
 void updatePhantom(void);
 void updateCursor(void);
 void closePhantom(void);
-double LowPassFilterThirdOrder(
-	double a[3],
-	double b[4],
+double LowPassFilterThirdOrder(double T,
+	double f_0,
 	double input,
-	double output_buff[3],
-	double input_buff[3]);
+	double signalOneAgo,
+	double signalTwoAgo,
+	double signalThreeAgo);
 
 
 #endif

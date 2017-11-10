@@ -1394,25 +1394,6 @@ void cAlgorithmFingerProxy::render(cRenderOptions& a_options)
 #endif
 }
 
-cVector3d cAlgorithmFingerProxy::computeProxy(const cVector3d& a_toolPos)
-                                              
-{
-    // update device position
-    m_deviceGlobalPos = a_toolPos;
-
-    // check if world has been defined; if so, compute forces
-    if (m_world != NULL)
-    {
-        // compute next best position of proxy
-        computeNextBestProxyPosition(m_deviceGlobalPos);
-
-        // update proxy to next best position
-        m_proxyGlobalPos = m_nextBestProxyGlobalPos;
-
-        // return result
-        return (m_proxyGlobalPos);
-	}
-}
 
 //------------------------------------------------------------------------------
 } // namespace chai3d
