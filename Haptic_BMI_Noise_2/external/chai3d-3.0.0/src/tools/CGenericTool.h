@@ -197,6 +197,9 @@ public:
 	// injecting noise and update position and orientation of the tool image
 	virtual void updatePoseNoisy(float noise_x,float noise_y,float noise_z);
 
+	// desaturate the proxy to allow noise to be rendered
+	virtual void desaturate();
+
     //--------------------------------------------------------------------------
     // PUBLIC METHODS - INTERACTION POINTS
     //--------------------------------------------------------------------------

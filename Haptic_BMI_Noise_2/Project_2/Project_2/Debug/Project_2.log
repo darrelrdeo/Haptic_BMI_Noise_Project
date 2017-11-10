@@ -1,81 +1,12 @@
-﻿Build started 11/1/2017 10:32:25 AM.
+﻿Build started 11/10/2017 9:45:39 AM.
      1>Project "C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\Project_2.vcxproj" on node 3 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Project_2.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\include /I../../external/CHAI3D/external/Eigen /I../../external/CHAI3D/src /I../../external/CHAI3D/external/glew/include /I../../external/CHAI3D/extras/freeglut/include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt source\Joystick.cpp source\Main.cpp source\Phantom.cpp source\data.cpp source\experiment.cpp source\graphics.cpp
-         Joystick.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\joystick.cpp(20): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\joystick.cpp(66): warning C4101: 'j' : unreferenced local variable
-         Generating Code...
-         Compiling...
-         graphics.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(107): warning C4005: 'WIN32_LEAN_AND_MEAN' : macro redefinition
-                 c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\extras\freeglut\include\gl\freeglut_std.h(58) : see previous definition of 'WIN32_LEAN_AND_MEAN'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-         experiment.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\experiment.cpp(64): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\experiment.cpp(65): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\experiment.cpp(78): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-         data.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-         Phantom.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(107): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(108): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(109): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(114): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(115): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\source\phantom.cpp(116): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-         Main.cpp
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\external\chai3d-3.0.0\src\math\cvector3d.h(352): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(325) : see declaration of 'sscanf'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(552): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
-     1>c:\users\darrel\documents\haptic_bmi_noise_project\haptic_bmi_noise_2\project_2\project_2\include\ul.h(553): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
-         Generating Code...
+         All outputs are up-to-date.
        Link:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/win-Win32\Project_2.exe" /NOLOGO /LIBPATH:"C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\external\chai3d-3.0.0\extras\freeglut\lib\Debug\Win32" /LIBPATH:C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\libs /LIBPATH:"C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\external\chai3d-3.0.0\lib\Debug\Win32" chai3d.lib freeglut.lib js.lib ul.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Project_2.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\bin\win-Win32\Project_2.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../bin/win-Win32\Project_2.lib" /MACHINE:X86 Debug\data.obj
-         Debug\experiment.obj
-         Debug\graphics.obj
-         Debug\Joystick.obj
-         Debug\Main.obj
-         Debug\Phantom.obj
-         Debug\ziggurat.obj
-         LINK : ../../bin/win-Win32\Project_2.exe not found or not built by the last incremental link; performing full link
+         All outputs are up-to-date.
          Project_2.vcxproj -> C:\Users\Darrel\Documents\Haptic_BMI_Noise_Project\Haptic_BMI_Noise_2\Project_2\Project_2\../../bin/win-Win32\Project_2.exe
-       Manifest:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"../../bin/win-Win32\Project_2.exe;#1" /manifest Debug\Project_2.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "Debug\Project_2.unsuccessfulbuild".
          Touching "Debug\Project_2.lastbuildstate".
@@ -83,4 +14,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:11.51
+Time Elapsed 00:00:00.04
