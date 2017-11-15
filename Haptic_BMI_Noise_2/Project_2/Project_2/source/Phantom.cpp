@@ -65,7 +65,9 @@ void initPhantom(void) {
 
     // initialize device loop timer
 	p_sharedData->m_phantomLoopTimer.setTimeoutPeriodSeconds(LOOP_TIME);
+	p_sharedData->m_noiseLoopTimer.setTimeoutPeriodSeconds(NOISE_TIME);
 	p_sharedData->m_phantomLoopTimer.start();
+	p_sharedData->m_noiseLoopTimer.start();
 
 	//initialize random seed
 	rand_seed = (uint32_t)cpu_time;
@@ -92,26 +94,12 @@ void updatePhantom(void) {
 
 	// check whether the simulation is running
     while(p_sharedData->simulationRunning) {
-			
-		// run loop only if phantomLoopTimer timeout has occurred
-        if (p_sharedData->m_phantomLoopTimer.timeoutOccurred()) {
+		
+		if(p_sharedData->m_noiseLoopTimer.timeoutOccurred())
+		{
+			p_sharedData->m_noiseLoopTimer.stop();
 
-			// ensure the timer has stopped for this loop
-			p_sharedData->m_phantomLoopTimer.stop();
-
-			// Get timestamp and compute the delta for looprate
-			currTime = timeGetTime();
-			DWORD delta = currTime - lastTime;
-
-			// store time stamps for book-keeping
-			p_sharedData->phantomLoopDelta = delta;
-			p_sharedData->phantomLoopTimeStamp = currTime;
-
-			// if the input device is a phantom then perform updates for input, otherwise skip
-            if (p_sharedData->input_device == INPUT_PHANTOM) {
-				
-				
-				//compute noise
+			//compute noise
 				r4_nor_setup(kn, fn, wn);
 				noise_x = SIGMA * r4_nor (rand_seed, kn,fn,wn);
 				noise_y = SIGMA * r4_nor (rand_seed, kn,fn,wn);
@@ -131,6 +119,28 @@ void updatePhantom(void) {
 				output_buff_x[2] = output_buff_x[1]; output_buff_x[1] = output_buff_x[0]; output_buff_x[0] = filt_noise_x;
 				output_buff_y[2] = output_buff_y[1]; output_buff_y[1] = output_buff_y[0]; output_buff_y[0] = filt_noise_y;
 				output_buff_z[2] = output_buff_z[1]; output_buff_z[1] = output_buff_z[0]; output_buff_z[0] = filt_noise_z;
+
+				p_sharedData->m_noiseLoopTimer.start(1);
+		}
+
+		// run loop only if phantomLoopTimer timeout has occurred
+        if (p_sharedData->m_phantomLoopTimer.timeoutOccurred()) {
+
+			// ensure the timer has stopped for this loop
+			p_sharedData->m_phantomLoopTimer.stop();
+
+			// Get timestamp and compute the delta for looprate
+			currTime = timeGetTime();
+			DWORD delta = currTime - lastTime;
+
+			// store time stamps for book-keeping
+			p_sharedData->phantomLoopDelta = delta;
+			p_sharedData->phantomLoopTimeStamp = currTime;
+
+			// if the input device is a phantom then perform updates for input, otherwise skip
+            if (p_sharedData->input_device == INPUT_PHANTOM) {
+				
+				
 
 
 				// Inject filtered noise and update tool position
@@ -231,7 +241,9 @@ void updateCursor(void) {
 	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
 	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
-	
+	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceGlobalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceGlobalPos().z();
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceGlobalPos().x();
 
 	/*
 	//This code segment maps cursor position to the "proxy sphere"
@@ -269,8 +281,8 @@ double LowPassFilterThirdOrder(
 	//init variables
 	double  filteredSignal;
 
-	filteredSignal =	input*b[0] + input_buff[0] * b[1] + input_buff[1] * b[2] + input_buff[2] * b[3]
-						- output_buff[0] * a[0] - output_buff[1]*a[1] - output_buff[2]*a[2];
+	filteredSignal =	(input*b[0] + input_buff[0] * b[1] + input_buff[1] * b[2] + input_buff[2] * b[3]
+						- output_buff[0] * a[0] - output_buff[1]*a[1] - output_buff[2]*a[2]);
 
 	//return value 
 	return filteredSignal;

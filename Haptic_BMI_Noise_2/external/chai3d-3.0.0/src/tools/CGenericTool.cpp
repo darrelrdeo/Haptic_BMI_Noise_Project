@@ -827,7 +827,7 @@ void cGenericTool::desaturate()
 	
 	cVector3d error;
 	error.zero();
-	v_hat.mulr(0.06,error);
+	v_hat.mulr(0.01,error);
 
 	// note to add conditional to check if we are not in saturation zone, only desaturate if needed!
 	

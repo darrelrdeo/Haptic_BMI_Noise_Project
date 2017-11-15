@@ -36,7 +36,7 @@ using namespace std;
 
 // Loop rate parameters
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
-
+#define NOISE_TIME 0.01  // regulates the noise generation rate 
 // Graphics
 #define CURSOR_SIZE 0.003 // cursor radius
 #define OBJECT_SCALE_FACTOR 3
@@ -47,15 +47,28 @@ using namespace std;
 #define MESH_POSZ 0.0
 
 // Noise Generation
-#define SIGMA 0.015
+#define SIGMA 0.005 //another good one to try is 0.001
 #define C_INTERVAL 0.077274879106467 // this value is half the range that contains 99% of the values of the distribution at sigma 0.03 , please recalculate this if you change sigma
-#define B0 0.000095442508423
-#define B1 0.000286327525271
-#define B2 0.000286327525271
-#define B3 0.000095442508423
-#define A0 -2.811573677324689
-#define A1 2.640483492778340
-#define	A2 -0.8281462753862610
+//cutoff 15h at 100hz sampling
+
+#define B0 0.00289819463372144
+#define B1 0.00869458390116433
+#define B2 0.00869458390116433
+#define B3 0.00289819463372144
+#define A0 -2.37409474370935
+#define A1 1.92935566909122
+#define	A2 -0.532075368312092
+
+/*
+//cutoff 15hz and 100hz sampling
+#define B0 0.0495329963572532
+#define B1 0.14859898907176
+#define B2 0.14859898907176
+#define B3 0.0495329963572532
+#define A0  -1.16191748367173
+#define A1 0.695942755789651
+#define	A2 -0.137761301259893
+*/
 
 // Material Parameters
 #define FRICTION_MU 0.3 //Mu value
@@ -261,6 +274,7 @@ typedef struct {
 	cPrecisionClock m_phantomLoopTimer;
 	cPrecisionClock m_joystickLoopTimer;
 	cPrecisionClock m_expLoopTimer;
+	cPrecisionClock m_noiseLoopTimer;
 	
 	// Time Stamps
 	DWORD phantomLoopTimeStamp;

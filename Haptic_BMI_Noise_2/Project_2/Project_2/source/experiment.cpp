@@ -392,7 +392,7 @@ void initHolePos()
 
 	//show chosen hole config
 	p_sharedData->p_vholeSurface[*p_randTrial]->setGhostEnabled(false);
-	p_sharedData->p_vholeSurface[*p_randTrial]->setTransparencyLevel(1.0,true,true);
+	p_sharedData->p_vholeSurface[*p_randTrial]->setTransparencyLevel(0.5,true,true);
 
 	//occlude surface
 	p_sharedData->p_vholeCover->setGhostEnabled(false);
