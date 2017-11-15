@@ -79,7 +79,7 @@ using namespace std;
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
 	int d_blockNum;			// number of current block
-	string d_blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
+	int d_blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	int d_trialNum;			// current trial number
 	
 	// cursor parameters

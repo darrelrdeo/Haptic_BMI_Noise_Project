@@ -260,10 +260,9 @@ void recordTrial(void) {
     
     // iterate over vector, writing one time step at a time
     for (vector<save_data>::iterator it = p_sharedData->trialData.begin() ; it != p_sharedData->trialData.end(); ++it) {
-        fprintf(p_sharedData->outputFile,/*"%d %s %d*/ "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %lu %lu %f %f %f %f",
-                	//it->d_blockNum,
-					//it->d_blockName,
-					//it->d_trialNum,
+        fprintf(p_sharedData->outputFile,"%d %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %lu %lu %f %f %f %f",
+                	it->d_blockNum,
+					it->d_trialNum,
 					it->d_cursorPosX,
 					it->d_cursorPosY,
 					it->d_cursorPosZ,
