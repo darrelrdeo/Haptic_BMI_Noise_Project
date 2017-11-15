@@ -766,7 +766,8 @@ void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
 	desaturate();
 
 	//inject noise
-	 m_deviceGlobalPos = m_deviceGlobalPos+m_workspaceScaleFactor*noise_vector;
+	m_deviceGlobalPos = m_deviceGlobalPos+m_workspaceScaleFactor*noise_vector;
+	//m_deviceGlobalPos = m_deviceGlobalPos+noise_vector;
 
 	// update the position and orientation of the tool image
     updateToolImagePosition();

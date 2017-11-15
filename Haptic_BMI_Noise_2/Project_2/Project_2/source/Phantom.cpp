@@ -25,7 +25,6 @@ cVector3d output_force; // temp var for output PHANTOM currently output force
 static shared_data* p_sharedData;  // structure for sharing data between threads
 
 //noise generator variables
-uint32_t rand_seed;
 uint32_t kn[128];
 float wn[128];
 float fn[128]; 
@@ -69,9 +68,7 @@ void initPhantom(void) {
 	p_sharedData->m_phantomLoopTimer.start();
 	p_sharedData->m_noiseLoopTimer.start();
 
-	//initialize random seed
-	rand_seed = (uint32_t)cpu_time;
-	printf("time seed = %ul \n", rand_seed);
+
 
 
 #ifdef DEBUG_FLAG
@@ -101,9 +98,9 @@ void updatePhantom(void) {
 
 			//compute noise
 				r4_nor_setup(kn, fn, wn);
-				noise_x = SIGMA * r4_nor (rand_seed, kn,fn,wn);
-				noise_y = SIGMA * r4_nor (rand_seed, kn,fn,wn);
-				noise_z = SIGMA * r4_nor (rand_seed, kn,fn,wn);
+				noise_x = SIGMA * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				noise_y = SIGMA * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				noise_z = SIGMA * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
 
 				//pass noise through filter
 				filt_noise_x = LowPassFilterThirdOrder(a,b,noise_x,output_buff_x,input_buff_x);
@@ -238,9 +235,9 @@ void updateCursor(void) {
 	
 	
 	//This code segment maps cursor position to the "goal sphere"
-	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
+	/*p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
-	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();*/
 	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceGlobalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceGlobalPos().z();
 	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceGlobalPos().x();

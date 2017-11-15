@@ -19,6 +19,7 @@ void linkSharedData(shared_data& sharedData) {
 void setup(void) {
     // initialize all elements of p_sharedData structure
 
+
 	// Simulation State
 	p_sharedData->simulationRunning = false; // selected during setup/initialization
 	p_sharedData->simulationFinished = false;// executed by experiment
@@ -33,14 +34,14 @@ void setup(void) {
 	p_sharedData->output_device = 0;
 
 	// state initializations
-	p_sharedData->experimentStateName = "";
+	p_sharedData->experimentStateName = " ";
 	p_sharedData->experimentStateNumber = 0;
 
 	// graphics
-	p_sharedData->message = "";
+	p_sharedData->message = " ";
 
 	p_sharedData->blockNum = 0;			// number of current block
-	p_sharedData->blockName = "";		// name of the current block (i.e. Haptics_Block, Vision_Block)
+	p_sharedData->blockName = "init";		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	p_sharedData->trialNum = 0;			// current trial number
 	
 	// cursor parameters
@@ -259,10 +260,10 @@ void recordTrial(void) {
     
     // iterate over vector, writing one time step at a time
     for (vector<save_data>::iterator it = p_sharedData->trialData.begin() ; it != p_sharedData->trialData.end(); ++it) {
-        fprintf(p_sharedData->outputFile,"%d %s %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %lu %lu %f %f %f %f",
-                	it->d_blockNum,
-					it->d_blockName,
-					it->d_trialNum,
+        fprintf(p_sharedData->outputFile,/*"%d %s %d*/ "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %lu %lu %f %f %f %f",
+                	//it->d_blockNum,
+					//it->d_blockName,
+					//it->d_trialNum,
 					it->d_cursorPosX,
 					it->d_cursorPosY,
 					it->d_cursorPosZ,

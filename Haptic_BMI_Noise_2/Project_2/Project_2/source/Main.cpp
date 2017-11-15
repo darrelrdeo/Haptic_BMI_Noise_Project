@@ -95,6 +95,9 @@ int main(int argc, char* argv[]) {
 	// call setup function
 	setup();
 
+	//seed rand() function
+	srand(sharedData->rand_seed);
+
 	// create threads
     cThread* phantomThread = new cThread();
     cThread* experimentThread = new cThread();

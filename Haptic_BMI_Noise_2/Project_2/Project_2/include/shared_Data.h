@@ -10,6 +10,8 @@
 #include "NIDAQcommands.h"
 #include "NIDAQmx.h"
 #include "js.h"
+#include <stdint.h>
+#include "ziggurat.h"
 using namespace chai3d;
 using namespace std;
 
@@ -294,6 +296,9 @@ typedef struct {
 	
 	// experiment trial elapsed time
 	double timeElapsed;
+
+	//random number generator seed
+	uint32_t rand_seed;
 
 } shared_data;
 

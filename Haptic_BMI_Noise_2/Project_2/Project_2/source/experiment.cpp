@@ -5,6 +5,7 @@
 #include <random>
 #include "js.h"
 #include <ctime>
+#include "ziggurat.h"
 
 using namespace chai3d;
 using namespace std;
@@ -15,11 +16,11 @@ using namespace std;
 static const int trialsPerExperimentBlock = 4;	  // trials per experiment block, same as number of targets
 static const int trialsBeforeBreak = 2;
 static const int trialTime = 10;                  // max time per trial or washout [sec]
-static const int breakTime = 10;                 // break time [sec] between blocks
-static const int preblockTime = 10;               // time to display message [sec]
+static const int breakTime = 2;                 // break time [sec] between blocks
+static const int preblockTime = 2;               // time to display message [sec]
 static const int recordTime = 1;                  // time to record data [sec]
-static const int relaxTime = 10;				// time to relax between large strings of trials within same block
-static const int relax_to_trial_time = 5;       // Message prompt in seconds before starting trial after relaxation, requires button press to continue
+static const int relaxTime = 2;				// time to relax between large strings of trials within same block
+static const int relax_to_trial_time = 2;       // Message prompt in seconds before starting trial after relaxation, requires button press to continue
 
 static const int numberOfBlocks = 2;
 
@@ -74,12 +75,9 @@ void initExperiment(void) {
 	p_sharedData->m_expLoopTimer.setTimeoutPeriodSeconds(LOOP_TIME);
 	p_sharedData->m_expLoopTimer.start(true);
 
-	//seed random number generator
-	srand(time(NULL));
-
-	//initialize random trial
+	//initialize pointer
 	p_randTrial = &randTrial;
-	*p_randTrial = rand()%5;
+
     
 }
 
@@ -181,6 +179,9 @@ void updateExperiment(void) {
 							// prep for next trial
 							(p_sharedData->trialNum)++;
 
+							//initialize hole position
+							initHolePos();
+
 							// If it is time for a relax
 							if((p_sharedData->trialNum % trialsBeforeBreak) == 0){
 								p_sharedData->experimentStateNumber = RELAX;
@@ -192,9 +193,6 @@ void updateExperiment(void) {
 								
 							}else{ // it is time to go to next trial
 							//initializeCursorState();
-
-							//initialize hole position
-							initHolePos();
 
 							// set/start timer (from zero) and return to block
 							p_sharedData->timer->setTimeoutPeriodSeconds(trialTime);
@@ -383,12 +381,12 @@ void initializeCursorState(void){
 
 void initHolePos()
 {	
+
 	//clear existing hole position indexed by rand_trial
 	p_sharedData->p_vholeSurface[*p_randTrial]->setGhostEnabled(true);
 	p_sharedData->p_vholeSurface[*p_randTrial]->setTransparencyLevel(0.0,true,true);
 
-	//generate new random trial
-	*p_randTrial = rand()%5;
+	*p_randTrial = (int) (((int)(r4_uni(p_sharedData->rand_seed)*10000))%5);
 
 	//show chosen hole config
 	p_sharedData->p_vholeSurface[*p_randTrial]->setGhostEnabled(false);
