@@ -29,6 +29,7 @@ uint32_t kn[128];
 float wn[128];
 float fn[128]; 
 float noise_x,noise_y,noise_z;
+float sigma;
 
 //filter variables
 double filt_noise_x;
@@ -40,8 +41,8 @@ double output_buff_z[3] = {0,0,0};
 double input_buff_x[3] = {0,0,0};
 double input_buff_y[3] = {0,0,0};
 double input_buff_z[3] = {0,0,0};
-double a[3] = {A0,A1,A2};
-double b[4] = {B0,B1,B2,B3};
+double* input_coeffs;
+double* output_coeffs;
 
 // thread timestamp vars
 static DWORD currTime = 0;
@@ -97,15 +98,29 @@ void updatePhantom(void) {
 			p_sharedData->m_noiseLoopTimer.stop();
 
 			//compute noise
+
+			if (p_sharedData->current_filter_setting==p_sharedData->cutoff_freq) 
+			{
+				output_coeffs = p_sharedData->a;
+				input_coeffs = p_sharedData->b;
+			}
+			else if (p_sharedData->current_filter_setting==p_sharedData->cutoff_freq1)
+			{
+				output_coeffs=p_sharedData->a1;
+				input_coeffs=p_sharedData->b1;
+			}
+
+			sigma = (float)p_sharedData->current_sigma;
+
 				r4_nor_setup(kn, fn, wn);
-				noise_x = SIGMA * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
-				noise_y = SIGMA * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
-				noise_z = SIGMA * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				noise_x = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				noise_y = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				noise_z = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
 
 				//pass noise through filter
-				filt_noise_x = LowPassFilterThirdOrder(a,b,noise_x,output_buff_x,input_buff_x);
-				filt_noise_y = LowPassFilterThirdOrder(a,b,noise_y,output_buff_y,input_buff_y);
-				filt_noise_z = LowPassFilterThirdOrder(a,b,noise_z,output_buff_z,input_buff_z);
+				filt_noise_x = LowPassFilterThirdOrder(output_coeffs,input_coeffs,noise_x,output_buff_x,input_buff_x);
+				filt_noise_y = LowPassFilterThirdOrder(output_coeffs,input_coeffs,noise_y,output_buff_y,input_buff_y);
+				filt_noise_z = LowPassFilterThirdOrder(output_coeffs,input_coeffs,noise_z,output_buff_z,input_buff_z);
 
 				//update required variables
 

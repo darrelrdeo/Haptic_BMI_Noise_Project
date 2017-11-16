@@ -25,25 +25,29 @@ static cDirectionalLight* light;  // light to illuminate the world
 static cLabel* opMode;            // label to display simulation operating mode
 static cLabel* input_device;      // label to display input device
 static cLabel* output_device;	  // label to display output device
-
 static cLabel* phantomRate;       // label to display PHANTOM rate
+
+static cLabel* experimentState;
+static cLabel* blockType;
 static cLabel* trial;             // label to display trial count
 static cLabel* message;           // label to display message to user
+
+static cLabel* frictionState;		//DEMO MODE Friction on/off indicator
+static cLabel* noiseState;			//DEMO MODE Noise on/off indicator
+static cLabel* filterState;			//DEMO MODE Filter cutoff frequency indicator
+static cLabel* sdState;				//DEMO MODE Standard Deviation indicator 
 
 static cLabel* XForce;			  // label to display the x force
 static cLabel* YForce;			  // label to display the y force
 static cLabel* ZForce;			  // label to display the z force
 
-static cLabel* cursorPosX;			// label to display cursor x position
-static cLabel* cursorPosY;			// label to display cursor y position
-static cLabel* cursorPosZ;
+static cLabel* cursorPosX;		// label to display cursor x position
+static cLabel* cursorPosY;		// label to display cursor y position
+static cLabel* cursorPosZ;		// label to display cursor z position
 
 static cLabel* cursorVelX;
 static cLabel* cursorVelY;
 static cLabel* cursorVelZ;
-
-static cLabel* experimentState;
-static cLabel* blockType;
 
 // phantom positions
 static cLabel* input_phantomPosX;
@@ -227,6 +231,11 @@ void initGraphics(int argc, char* argv[]) {
 	experimentState = new cLabel(font);
 	blockType = new cLabel(font);
 
+	frictionState = new cLabel(font);
+	noiseState = new cLabel(font);
+	filterState = new cLabel(font);
+	sdState = new cLabel(font);
+
 	input_phantomPosX = new cLabel(font);
 	input_phantomPosY = new cLabel(font);
 	input_phantomPosZ = new cLabel(font);
@@ -270,11 +279,14 @@ void initGraphics(int argc, char* argv[]) {
 	camera->m_frontLayer->addChild(cursorPosX);
 	camera->m_frontLayer->addChild(cursorPosY);
 	camera->m_frontLayer->addChild(cursorPosZ);
-	camera->m_frontLayer->addChild(experimentState);
-	camera->m_frontLayer->addChild(blockType);
 	camera->m_frontLayer->addChild(input_phantomPosX);
 	camera->m_frontLayer->addChild(input_phantomPosY);
 	camera->m_frontLayer->addChild(input_phantomPosZ);
+	camera->m_frontLayer->addChild(frictionState);
+	camera->m_frontLayer->addChild(noiseState);
+	camera->m_frontLayer->addChild(filterState);
+	camera->m_frontLayer->addChild(sdState);
+
 	/*
 	camera->m_frontLayer->addChild(output_phantomPosX);
 	camera->m_frontLayer->addChild(output_phantomPosY);
@@ -335,6 +347,11 @@ void updateGraphics(void) {
     trial->setString("Trial: " + to_string(static_cast<long long>(p_sharedData->trialNum)));
 	experimentState->setString("Experiment State: " + p_sharedData->experimentStateName);
 	blockType->setString("Block Name: " + p_sharedData->blockName);
+
+	if(p_sharedData->noise_toggle) noiseState->setString("Noise ON | Press n to toggle"); else noiseState->setString("Noise OFF | Press n to toggle");
+	if(p_sharedData->friction_toggle) frictionState->setString("Friction ON | Press d to toggle"); else frictionState->setString("Friction OFF | Press d to toggle");
+	filterState->setString(p_sharedData->current_filter_setting + "| Press a to toggle");
+	sdState->setString("Standard Deviation (m): " + to_string(static_cast<long double>(p_sharedData->current_sigma))+"| Press s to toggle");
 
 	XForce->setString("XForce Des: " + to_string(static_cast<long double>(p_sharedData->outputPhantomForce_X)));
 	YForce->setString("YForce Des: " + to_string(static_cast<long double>(p_sharedData->outputPhantomForce_Y)));
@@ -398,12 +415,15 @@ void updateGraphics(void) {
 	input_phantomVelZ->setLocalPos(10, (int) (windowH - 22.0 * input_phantomVelZ->getHeight()),0);
 	*/
 
-	trial->setLocalPos((int) (windowW - trial->getWidth() - 10), (int) (windowH - 2.0 * opMode->getHeight()), 0);
+	trial->setLocalPos((int) (windowW - trial->getWidth() - 10), (int) (windowH - 2.0 * trial->getHeight()), 0);
+	filterState->setLocalPos((int) (windowW - filterState->getWidth() - 10), (int) (windowH - 2.0 * filterState->getHeight()), 0);
+	sdState->setLocalPos((int) (windowW - sdState->getWidth() - 10), (int) (windowH - 3.0 * sdState->getHeight()), 0);
+	frictionState->setLocalPos(0, (int)(frictionState->getHeight()), 0);
 	blockType->setLocalPos((int) (windowW - blockType->getWidth() - 10), (int) (0), 0);
         
 	// update message to user
     message->setString(p_sharedData->message);
-    message->setLocalPos((int) (0.5 * (windowW - message->getWidth())), (int) (0.8 * (windowH - message->getHeight())), 0);  // center of window
+    message->setLocalPos((int) (0.5 * (windowW - message->getWidth())), (int) (0.95 * (windowH - message->getHeight())), 0);  // center of window
     
 	opMode->setShowEnabled(DEBUG_DISPLAYS);
     input_device->setShowEnabled(DEBUG_DISPLAYS);
@@ -420,6 +440,22 @@ void updateGraphics(void) {
 	cursorPosZ->setShowEnabled(DEBUG_DISPLAYS);
 	message->setShowEnabled(DEBUG_DISPLAYS);
 
+	if (p_sharedData->opMode==DEMO)
+		{	
+			experimentState->setShowEnabled(false);
+			trial->setShowEnabled(false);
+			noiseState->setShowEnabled(true);
+			frictionState->setShowEnabled(true);
+			filterState->setShowEnabled(true);
+			sdState->setShowEnabled(true);
+		}
+	else
+		{	
+			noiseState->setShowEnabled(false);
+			frictionState->setShowEnabled(false);
+			filterState->setShowEnabled(false);
+			sdState->setShowEnabled(false);
+		}
 	/*
 	input_phantomVelX->setShowEnabled(DEBUG_DISPLAYS);
 	input_phantomVelY->setShowEnabled(DEBUG_DISPLAYS);
@@ -479,44 +515,6 @@ void respToKey(unsigned char key, int x, int y) {
         exit(0);
     }
 
-    // option f: turn off friction
-    if (key == 'd')
-    {	
-		for (int c = 0; c<5 ; c++ )
-		{
-			if (p_sharedData->p_vholeSurface[c]->m_material->getStaticFriction()>0 || p_sharedData->p_vholeSurface[c]->m_material->getDynamicFriction()>0)
-				{p_sharedData->p_vholeSurface[c]->setFriction(0,0,true);}
-			else
-				{p_sharedData->p_vholeSurface[c]->setFriction(FRICTION_MU,FRICTION_MU,true);}
-		}
-	}
-
-    // option n: turn off noise
-    if (key == 'n')
-    {
-		if (p_sharedData->noise_toggle)
-			{p_sharedData->noise_toggle = false;}
-		else
-			{p_sharedData->noise_toggle = true;}
-    }
-
-	// option c: toggle cover
-	if (key == 'c')
-    {
-		if(p_sharedData->p_vholeCover->getGhostEnabled())
-			{
-				p_sharedData->p_vholeCover->setGhostEnabled(false);
-				p_sharedData->p_vholeCover->setTransparencyLevel(1.0,true,true);
-		
-		}
-		else
-			{
-				p_sharedData->p_vholeCover->setGhostEnabled(true);
-				p_sharedData->p_vholeCover->setTransparencyLevel(0.0,true,true);
-		}
-
-    }
-
 	if (key == 'f')
     {
         if (fullscreen)
@@ -534,6 +532,80 @@ void respToKey(unsigned char key, int x, int y) {
             glutFullScreen();
             fullscreen = true;
         }
+	}
+
+	if (p_sharedData->opMode==DEMO){
+
+    // option f: turn off friction
+		if (key == 'd')
+		{	
+			for (int c = 0; c<5 ; c++ )
+			{
+				if (p_sharedData->friction_toggle)
+					{
+						p_sharedData->p_vholeSurface[c]->setFriction(0,0,true);
+						p_sharedData->friction_toggle = false;
+				}
+				else
+					{
+						p_sharedData->p_vholeSurface[c]->setFriction(FRICTION_MU,FRICTION_MU,true);
+						p_sharedData->friction_toggle = true;
+				}
+			}
+		}
+
+		// option n: turn off noise
+		if (key == 'n')
+		{
+			if (p_sharedData->noise_toggle)
+				{p_sharedData->noise_toggle = false;}
+			else
+				{p_sharedData->noise_toggle = true;}
+		}
+
+		// option c: toggle cover
+		if (key == 'c')
+		{
+			if(p_sharedData->p_vholeCover->getGhostEnabled())
+				{
+					p_sharedData->p_vholeCover->setGhostEnabled(false);
+					p_sharedData->p_vholeCover->setTransparencyLevel(1.0,true,true);
+		
+			}
+			else
+				{
+					p_sharedData->p_vholeCover->setGhostEnabled(true);
+					p_sharedData->p_vholeCover->setTransparencyLevel(0.0,true,true);
+			}
+
+		}
+
+		// option s: toggle sigma
+		if (key == 's')
+		{
+			if (p_sharedData->sigma_flag) 
+			{	
+				p_sharedData->current_sigma =SIGMA2;
+				p_sharedData->sigma_flag=false;
+			}
+			else 
+				{
+					p_sharedData->current_sigma =SIGMA1;
+					p_sharedData->sigma_flag=true;
+				}	
+		}
+
+		// option a: toggle cutoff freq
+		if (key == 'a')
+		{
+			if (p_sharedData->current_filter_setting==p_sharedData->cutoff_freq) 
+				{p_sharedData->current_filter_setting=p_sharedData->cutoff_freq1;}
+			else 
+				{p_sharedData->current_filter_setting=p_sharedData->cutoff_freq;}
+		}
+
+
+
 	}
     
 }

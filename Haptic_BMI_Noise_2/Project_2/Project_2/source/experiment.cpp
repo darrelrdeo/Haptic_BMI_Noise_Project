@@ -24,6 +24,10 @@ static const int relax_to_trial_time = 2;       // Message prompt in seconds bef
 
 static const int numberOfBlocks = 2;
 
+// Demo Loop Params
+bool demo_start = true;
+DWORD dbouncer = 0;
+
 // File params
 static int subjectNum;           // subject number
 static int session;              // session number for subject
@@ -34,8 +38,9 @@ int blockNumberIndex = 0;
 
 int userReady = 0;
 
-int* p_randTrial;
+// index for random sample generation
 int randTrial = 0;
+int* p_randTrial = &randTrial;
 
 static shared_data* p_sharedData;  // structure for sharing data between threads
 
@@ -75,13 +80,17 @@ void initExperiment(void) {
 	p_sharedData->m_expLoopTimer.setTimeoutPeriodSeconds(LOOP_TIME);
 	p_sharedData->m_expLoopTimer.start(true);
 
-	//initialize pointer
-	p_randTrial = &randTrial;
-
     
 }
 
+void initDemo(void){
 
+	// initialize experiment loop timer
+	p_sharedData->m_expLoopTimer.setTimeoutPeriodSeconds(LOOP_TIME);
+	p_sharedData->m_expLoopTimer.start(true);
+	p_sharedData->message = "Welcome to DEMO MODE. Click the button on stylus to load a new hole";
+
+}
 
 
 // experiment state machine (only entered if in experiment mode)
@@ -104,7 +113,8 @@ void updateExperiment(void) {
 			
 			// stop timer for experiment loop
 			p_sharedData->m_expLoopTimer.stop();
-			
+
+//*********************EXPERIMENT STATE MACHINE************************************		
 			if (p_sharedData->opMode == EXPERIMENT) {
 						
 				// Begin State Machine
@@ -343,7 +353,29 @@ void updateExperiment(void) {
 				}
 
 				
-			} // END EXPERIMENT STATE MACHINE
+			} 
+//*********************END OF EXPERIMENT STATE MACHINE ****************************
+
+//******************************DEMO LOOP******************************************
+			if (p_sharedData->opMode==DEMO){
+
+				if(demo_start)
+					{	//Generate a new hole position and remove surface occlusion
+						initHolePos();
+						p_sharedData->p_vholeCover->setGhostEnabled(true);
+						p_sharedData->p_vholeCover->setTransparencyLevel(0.0,true,true);
+						demo_start = false;
+					}
+				
+				if(p_sharedData->inputPhantomSwitch==1 && currTime-dbouncer>500)
+					{
+						demo_start = true; //reset the demo_start flag so that we regenerate a new hole position when the switch is pressed.
+						dbouncer = currTime;
+					}
+
+			}
+//****************************** END DEMO LOOP***************************************
+
 
 			// restart experiment loop timer            
 			p_sharedData->m_expLoopTimer.start(true);

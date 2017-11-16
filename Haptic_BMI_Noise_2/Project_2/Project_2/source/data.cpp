@@ -26,6 +26,7 @@ void setup(void) {
 
 	// debug toggle
 	p_sharedData->noise_toggle =  true;
+	p_sharedData->friction_toggle = true;
 
 	// input devices 
 	p_sharedData->input_device = 0;
@@ -33,17 +34,34 @@ void setup(void) {
 	// output devices
 	p_sharedData->output_device = 0;
 
-	// state initializations
-	p_sharedData->experimentStateName = " ";
-	p_sharedData->experimentStateNumber = 0;
-
 	// graphics
 	p_sharedData->message = " ";
 
+	// state initializations
+	p_sharedData->experimentStateName = " ";
+	p_sharedData->experimentStateNumber = 0;
 	p_sharedData->blockNum = 0;			// number of current block
 	p_sharedData->blockName = "init";		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	p_sharedData->trialNum = 0;			// current trial number
 	
+	//filter parameters
+
+	p_sharedData->cutoff_freq = "5hz at 100hz sampling";
+	p_sharedData->a[0] = -2.37409474370935;	p_sharedData->a[1] = 1.92935566909122;	p_sharedData->a[2] = -0.532075368312092;
+	p_sharedData->b[0] = 0.00289819463372144;	p_sharedData->b[1] = 0.00869458390116433;
+	p_sharedData->b[2] = p_sharedData->b[1]; p_sharedData->b[3] = p_sharedData->b[0];
+	
+	p_sharedData->cutoff_freq1 = "15hz at 100hz sampling";
+	p_sharedData->a1[0] = -1.16191748367173;	p_sharedData->a1[1] = 0.695942755789651;	p_sharedData->a1[2] = -0.137761301259893;
+	p_sharedData->b1[0] = 0.0495329963572532;	p_sharedData->b1[1] = 0.14859898907176;
+	p_sharedData->b1[2] = p_sharedData->b1[1]; p_sharedData->b1[3] = p_sharedData->b[0];
+
+	p_sharedData->current_filter_setting = p_sharedData->cutoff_freq;
+
+	//noise parameter
+	p_sharedData->sigma_flag=true;
+	p_sharedData->current_sigma = SIGMA1;
+
 	// cursor parameters
 	p_sharedData->cursorPosX = 0;	// current cursor x position NOTE: This should be set to our desired z position in the space
 	p_sharedData->cursorPosY = 0;	// current cursor y position
@@ -163,6 +181,9 @@ void setup(void) {
         cin >> response;
         if (response == '1') p_sharedData->input_device = INPUT_PHANTOM;
         else if (response == '2') p_sharedData->input_device = INPUT_JOYSTICK;
+		
+		//hard code the output device to be a phantom
+		p_sharedData->output_device = OUTPUT_PHANTOM;
 	}	
 }
 

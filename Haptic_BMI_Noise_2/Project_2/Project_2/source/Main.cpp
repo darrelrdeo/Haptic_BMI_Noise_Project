@@ -111,6 +111,7 @@ int main(int argc, char* argv[]) {
 
     // initialize experiment(default) or demo 
     if(sharedData->opMode == EXPERIMENT) initExperiment();
+	if(sharedData->opMode == DEMO) initDemo();
 
     // initialize graphics
     initGraphics(argc, argv);

@@ -15,6 +15,7 @@
 
 void linkSharedDataToExperiment(shared_data& sharedData);
 void initExperiment(void);
+void initDemo(void);
 
 void updateExperiment(void);
 void closeExperiment(void);

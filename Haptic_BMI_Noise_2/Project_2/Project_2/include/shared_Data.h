@@ -49,10 +49,11 @@ using namespace std;
 #define MESH_POSZ 0.0
 
 // Noise Generation
-#define SIGMA 0.005 //another good one to try is 0.001
-#define C_INTERVAL 0.077274879106467 // this value is half the range that contains 99% of the values of the distribution at sigma 0.03 , please recalculate this if you change sigma
-//cutoff 15h at 100hz sampling
+#define SIGMA1 0.005 //another good one to try is 0.001
+#define SIGMA2 0.001
 
+/*
+//cutoff 5hz at 100hz sampling
 #define B0 0.00289819463372144
 #define B1 0.00869458390116433
 #define B2 0.00869458390116433
@@ -61,7 +62,7 @@ using namespace std;
 #define A1 1.92935566909122
 #define	A2 -0.532075368312092
 
-/*
+
 //cutoff 15hz and 100hz sampling
 #define B0 0.0495329963572532
 #define B1 0.14859898907176
@@ -170,16 +171,13 @@ typedef struct {
 
 	// debug toggle
 	bool noise_toggle;
+	bool friction_toggle;
 
 	// input devices 
 	int input_device;
 
 	// output devices
 	int output_device;
-
-	int blockNum;			// number of current block
-	string blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
-	int trialNum;			// current trial number
 
 	// graphics
 	string message;
@@ -189,10 +187,28 @@ typedef struct {
 	cMultiMesh* p_vholeCover;
 	cMultiMesh* p_vholeSurface[5];
 
-	// state machine states
+	// state machine params
 	int experimentStateNumber;
 	string experimentStateName;
+	int blockNum;			// number of current block
+	string blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
+	int trialNum;			// current trial number
 	
+	//filter param
+	string cutoff_freq;
+	double a[3];
+	double b[4];
+
+	string cutoff_freq1;
+	double a1[3];
+	double b1[4];
+
+	string current_filter_setting;
+	
+	//noise param
+	bool sigma_flag;
+	double current_sigma;
+
 	// cursor parameters
 	double cursorPosX;	// current cursor x position
 	double cursorPosY;	// current cursor y position
@@ -261,7 +277,6 @@ typedef struct {
 	double outputPhantomForce_X;
 	double outputPhantomForce_Y;
 	double outputPhantomForce_Z;
-
 
 	// Joystick State
 	double joystickPosX;
