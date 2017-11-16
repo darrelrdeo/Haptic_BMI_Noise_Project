@@ -186,8 +186,7 @@ void updateExperiment(void) {
 						// wait for time to expire (more than enough to record data)
 						if (p_sharedData->timer->timeoutOccurred()) {
 							
-							// prep for next trial
-							(p_sharedData->trialNum)++;
+
 
 							//initialize hole position
 							initHolePos();
@@ -201,7 +200,10 @@ void updateExperiment(void) {
 								p_sharedData->timer->setTimeoutPeriodSeconds(relaxTime);
 								p_sharedData->timer->start(true);
 								
-							}else{ // it is time to go to next trial
+							}
+							
+
+							else{ // it is time to go to next trial
 							//initializeCursorState();
 
 							// set/start timer (from zero) and return to block
@@ -209,7 +211,11 @@ void updateExperiment(void) {
 							p_sharedData->timer->start(true);
 
 							p_sharedData->experimentStateNumber = EXPERIMENT;
+
 							}
+
+							// prep for next trial
+							(p_sharedData->trialNum)++;
 						}
 						break; // END RECORD STATE
 					
