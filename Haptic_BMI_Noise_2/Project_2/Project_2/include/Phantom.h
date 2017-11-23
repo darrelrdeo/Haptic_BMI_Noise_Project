@@ -8,7 +8,6 @@
 void initPhantom(void);
 void linkSharedDataToPhantom(shared_data& sharedData);
 void updatePhantom(void);
-void updateCursor(void);
 void closePhantom(void);
 double LowPassFilterThirdOrder(
 	double a[3],

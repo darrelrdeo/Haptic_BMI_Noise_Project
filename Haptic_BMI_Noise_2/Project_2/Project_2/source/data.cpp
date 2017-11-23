@@ -62,6 +62,10 @@ void setup(void) {
 	p_sharedData->sigma_flag=true;
 	p_sharedData->current_sigma = SIGMA1;
 
+	p_sharedData->noiseX = 0;
+	p_sharedData->noiseY = 0;
+	p_sharedData->noiseZ = 0;
+
 	// cursor parameters
 	p_sharedData->cursorPosX = 0;	// current cursor x position NOTE: This should be set to our desired z position in the space
 	p_sharedData->cursorPosY = 0;	// current cursor y position
@@ -200,6 +204,11 @@ void saveOneTimeStep(void) {
 	temp.d_blockName = p_sharedData->blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	temp.d_trialNum = p_sharedData->trialNum;			// current trial number
 	
+	//noise parameters
+	temp.d_noiseX = p_sharedData->noiseX;
+	temp.d_noiseY = p_sharedData->noiseY;
+	temp.d_noiseZ = p_sharedData->noiseZ; 
+
 	// cursor parameters
 	temp.d_cursorPosX = p_sharedData->cursorPosX;	// current cursor x position
 	temp.d_cursorPosY = p_sharedData->cursorPosY;	// current cursor y position
@@ -234,11 +243,6 @@ void saveOneTimeStep(void) {
 	temp.d_outputPhantomVelZ = p_sharedData->outputPhantomVelZ;
 
 	temp.d_outputPhantomSwitch = p_sharedData->outputPhantomSwitch;
-
-	// Output Phantom desired force output
-	temp.d_outputPhantomForce_Desired_X = p_sharedData->outputPhantomForce_Desired_X;
-	temp.d_outputPhantomForce_Desired_Y = p_sharedData->outputPhantomForce_Desired_Y;
-	temp.d_outputPhantomForce_Desired_Z = p_sharedData->outputPhantomForce_Desired_Z;
 
 	// Output Phantom current force output
 	temp.d_outputPhantomForce_X = p_sharedData->outputPhantomForce_X;
@@ -284,6 +288,9 @@ void recordTrial(void) {
         fprintf(p_sharedData->outputFile,"%d %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %lu %lu %lu %lu %lu %lu %lu %f %f %f %f",
                 	it->d_blockNum,
 					it->d_trialNum,
+					it->d_noiseX,
+					it->d_noiseY,
+					it->d_noiseZ,
 					it->d_cursorPosX,
 					it->d_cursorPosY,
 					it->d_cursorPosZ,
@@ -307,9 +314,6 @@ void recordTrial(void) {
 					it->d_outputPhantomVelY,
 					it->d_outputPhantomVelZ,
 					it->d_outputPhantomSwitch,
-					it->d_outputPhantomForce_Desired_X,
-					it->d_outputPhantomForce_Desired_Y,
-					it->d_outputPhantomForce_Desired_Z,
 					it->d_outputPhantomForce_X,
 					it->d_outputPhantomForce_Y,
 					it->d_outputPhantomForce_Z,

@@ -12,6 +12,14 @@ using namespace std;
 
 //#define DEBUG 
 
+// Data variables we need to record during the record step
+cVector3d cursor_pos; //temporary variable for haptic tool cursor position
+cVector3d input_pos;  // temporary variable for input PHANTOM position 
+cVector3d input_vel;  // temporary variable for input PHANTOM velocity 
+cVector3d output_pos;  // temporary variable for output PHANTOM position 
+cVector3d output_vel;  // temporary variable for output PHANTOM velocity 
+cVector3d output_force; // temp var for output PHANTOM currently output force
+
 // Experiment State Machine params
 static const int trialsPerExperimentBlock = 4;	  // trials per experiment block, same as number of targets
 static const int trialsBeforeBreak = 2;
@@ -69,7 +77,7 @@ void initExperiment(void) {
     // generate filename and open file for writing
     sprintf(filename, "Subj_%d_Session_%d.dat", subjectNum, session);
     p_sharedData->outputFile = fopen(filename,"w");
-    fprintf(p_sharedData->outputFile, "blockNum, blockName, trialNum, cursorPosX, cursorPosY, cursorPosZ, cursorPosX_OneAgo, cursorPosY_OneAgo, cursorPosZ_OneAgo, cursorVelX, cursorVelY, cursorVelZ, inputPhantomPosX, inputPhantomPosY, inputPhantomPosZ, inputPhantomVelX, inputPhantomVelY, inputPhantomVelZ, inputPhantomSwitch, outputPhantomPosX, outputPhantomPosY, outputPhantomPosZ, outputPhantomVelX, outputPhantomVelY, outputPhantomVelZ, outputPhantomSwitch, outputPhantomForce_Desired_X, outputPhantomForce_Desired_Y, outputPhantomForce_Desired_Z, joystickPosX, joystickPosY, joystickSwitch, phantomLoopTimeStamp, joystickLoopTimeStamp, experimentLoopTimeStamp,recordTimeStamp, phantomLoopDelta, joystickLoopDelta, experimentLoopDelta, phantomFreq, joystickFreq, experimentFreq\n");
+    fprintf(p_sharedData->outputFile, "blockNum, trialNum, noiseX, noiseY, noiseZ, cursorPosX, cursorPosY, cursorPosZ, cursorPosX_OneAgo, cursorPosY_OneAgo, cursorPosZ_OneAgo, cursorVelX, cursorVelY, cursorVelZ, inputPhantomPosX, inputPhantomPosY, inputPhantomPosZ, inputPhantomVelX, inputPhantomVelY, inputPhantomVelZ, inputPhantomSwitch, outputPhantomPosX, outputPhantomPosY, outputPhantomPosZ, outputPhantomVelX, outputPhantomVelY, outputPhantomVelZ, outputPhantomSwitch, outputPhantomForce_X, outputPhantomForce_Y, outputPhantomForce_Z, joystickPosX, joystickPosY, joystickSwitch, phantomLoopTimeStamp, joystickLoopTimeStamp, experimentLoopTimeStamp,recordTimeStamp, phantomLoopDelta, joystickLoopDelta, experimentLoopDelta, phantomFreq, joystickFreq, experimentFreq\n");
     
     // enter start-up mode, with force feedback off for safety
    	p_sharedData->opMode = EXPERIMENT;
@@ -104,7 +112,6 @@ void updateExperiment(void) {
 		// only update experiment if timer has expired
 	    if (p_sharedData->m_expLoopTimer.timeoutOccurred()) {
 			
-
 			// Get timestamp and compute the delta
 			currTime = timeGetTime();
 			DWORD delta = currTime - lastTime;
@@ -113,6 +120,46 @@ void updateExperiment(void) {
 			
 			// stop timer for experiment loop
 			p_sharedData->m_expLoopTimer.stop();
+
+			updateCursor(); //updates the virtual cursor position and calculates velocities
+
+			// poll the input and output devices and record their states.
+
+			// get INPUT PHANTOM position and velocity vectors
+            p_sharedData->p_input_Phantom->getPosition(input_pos);
+            p_sharedData->p_input_Phantom->getLinearVelocity(input_vel);
+
+			//store position values into respective variable in sharedData structure
+			p_sharedData->inputPhantomPosX = input_pos.x();
+			p_sharedData->inputPhantomPosY = input_pos.y();
+			p_sharedData->inputPhantomPosZ = input_pos.z();
+
+			// store velocity values into respective vars in sharedData structure
+            p_sharedData->inputPhantomVelX = input_vel.x();
+			p_sharedData->inputPhantomVelY = input_vel.y();
+			p_sharedData->inputPhantomVelZ = input_vel.z();
+
+			// get current forces output by OUTPUT PHANTOM device
+			p_sharedData->p_output_Phantom->getForce(output_force);
+			p_sharedData->outputPhantomForce_X = output_force.x();
+			p_sharedData->outputPhantomForce_Y = output_force.y();
+			p_sharedData->outputPhantomForce_Z = output_force.z();
+
+			// get OUTPUT PHANTOM position and velocity vectors
+            p_sharedData->p_output_Phantom->getPosition(output_pos);
+            p_sharedData->p_output_Phantom->getLinearVelocity(output_vel);
+
+			//store position values into respective variable in sharedData structure
+			p_sharedData->outputPhantomPosX = output_pos.x();
+			p_sharedData->outputPhantomPosY = output_pos.y();
+			p_sharedData->outputPhantomPosZ = output_pos.z();
+
+			// store velocity values into respective vars in sharedData structure
+            p_sharedData->outputPhantomVelX = output_vel.x();
+			p_sharedData->outputPhantomVelY = output_vel.y();
+			p_sharedData->outputPhantomVelZ = output_vel.z();
+
+
 
 //*********************EXPERIMENT STATE MACHINE************************************		
 			if (p_sharedData->opMode == EXPERIMENT) {
@@ -382,7 +429,6 @@ void updateExperiment(void) {
 			}
 //****************************** END DEMO LOOP***************************************
 
-
 			// restart experiment loop timer            
 			p_sharedData->m_expLoopTimer.start(true);
 			lastTime = currTime;
@@ -438,3 +484,38 @@ void initHolePos()
 
 }
 
+void updateCursor(void) {
+	// position-position mapping between input phantom and virtual cursor
+	
+	
+	//This code segment maps cursor position to the "goal sphere"
+	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceGlobalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceGlobalPos().z();
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceGlobalPos().x();
+
+	/*
+	//This code segment maps cursor position to the "proxy sphere"
+	p_sharedData->cursorPosX = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().x();
+	p_sharedData->cursorPosY = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().z();
+	*/
+
+	//calculate velocities
+	DWORD delta = p_sharedData->experimentLoopDelta;
+
+	if (delta!=0)
+	{
+		p_sharedData->cursorVelX = (p_sharedData->cursorPosX-p_sharedData->cursorPosX_OneAgo)/delta;
+		p_sharedData->cursorVelX = (p_sharedData->cursorPosY-p_sharedData->cursorPosY_OneAgo)/delta;
+		p_sharedData->cursorVelX = (p_sharedData->cursorPosZ-p_sharedData->cursorPosZ_OneAgo)/delta;
+	}
+	
+	//store current position as old position
+	p_sharedData->cursorPosX_OneAgo = p_sharedData->cursorPosX;
+	p_sharedData->cursorPosY_OneAgo = p_sharedData->cursorPosY;
+	p_sharedData->cursorPosZ_OneAgo = p_sharedData->cursorPosZ;
+
+	// update cursor position
+	//p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+}

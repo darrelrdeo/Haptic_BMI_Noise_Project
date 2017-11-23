@@ -83,6 +83,11 @@ typedef struct {
 	string d_blockName;		// name of the current block (i.e. Haptics_Block, Vision_Block)
 	int d_trialNum;			// current trial number
 	
+	// noise parameters
+	float d_noiseX;
+	float d_noiseY;
+	float d_noiseZ;
+
 	// cursor parameters
 	double d_cursorPosX;	// current cursor x position
 	double d_cursorPosY;	// current cursor y position
@@ -208,6 +213,12 @@ typedef struct {
 	//noise param
 	bool sigma_flag;
 	double current_sigma;
+
+	//positional noise state
+	float noiseX;
+	float noiseY;
+	float noiseZ;
+
 
 	// cursor parameters
 	double cursorPosX;	// current cursor x position

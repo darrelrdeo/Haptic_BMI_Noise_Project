@@ -12,23 +12,12 @@ using namespace std;
 
 static const double phantomScalar = 2;  // to scale PHANTOM workspace to graphics workspace
 
-cVector3d cursor_pos; //temporary variable for haptic tool cursor position
-
-cVector3d input_pos;  // temporary variable for input PHANTOM position 
-cVector3d input_vel;  // temporary variable for input PHANTOM velocity 
-
-cVector3d output_pos;  // temporary variable for output PHANTOM position 
-cVector3d output_vel;  // temporary variable for output PHANTOM velocity 
-
-cVector3d output_force; // temp var for output PHANTOM currently output force
-
 static shared_data* p_sharedData;  // structure for sharing data between threads
 
 //noise generator variables
 uint32_t kn[128];
 float wn[128];
 float fn[128]; 
-float noise_x,noise_y,noise_z;
 float sigma;
 
 //filter variables
@@ -113,20 +102,20 @@ void updatePhantom(void) {
 			sigma = (float)p_sharedData->current_sigma;
 
 				r4_nor_setup(kn, fn, wn);
-				noise_x = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
-				noise_y = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
-				noise_z = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				p_sharedData->noiseX = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				p_sharedData->noiseY = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
+				p_sharedData->noiseZ = sigma * r4_nor (p_sharedData->rand_seed, kn,fn,wn);
 
 				//pass noise through filter
-				filt_noise_x = LowPassFilterThirdOrder(output_coeffs,input_coeffs,noise_x,output_buff_x,input_buff_x);
-				filt_noise_y = LowPassFilterThirdOrder(output_coeffs,input_coeffs,noise_y,output_buff_y,input_buff_y);
-				filt_noise_z = LowPassFilterThirdOrder(output_coeffs,input_coeffs,noise_z,output_buff_z,input_buff_z);
+				filt_noise_x = LowPassFilterThirdOrder(output_coeffs,input_coeffs,p_sharedData->noiseX,output_buff_x,input_buff_x);
+				filt_noise_y = LowPassFilterThirdOrder(output_coeffs,input_coeffs,p_sharedData->noiseY,output_buff_y,input_buff_y);
+				filt_noise_z = LowPassFilterThirdOrder(output_coeffs,input_coeffs,p_sharedData->noiseZ,output_buff_z,input_buff_z);
 
 				//update required variables
 
-				input_buff_x[2] = input_buff_x[1]; input_buff_x[1] = input_buff_x[0]; input_buff_x[0] = noise_x;
-				input_buff_y[2] = input_buff_y[1]; input_buff_y[1] = input_buff_y[0]; input_buff_y[0] = noise_y;
-				input_buff_z[2] = input_buff_z[1]; input_buff_z[1] = input_buff_z[0]; input_buff_z[0] = noise_z;
+				input_buff_x[2] = input_buff_x[1]; input_buff_x[1] = input_buff_x[0]; input_buff_x[0] = p_sharedData->noiseX;
+				input_buff_y[2] = input_buff_y[1]; input_buff_y[1] = input_buff_y[0]; input_buff_y[0] = p_sharedData->noiseY;
+				input_buff_z[2] = input_buff_z[1]; input_buff_z[1] = input_buff_z[0]; input_buff_z[0] = p_sharedData->noiseZ;
 
 				output_buff_x[2] = output_buff_x[1]; output_buff_x[1] = output_buff_x[0]; output_buff_x[0] = filt_noise_x;
 				output_buff_y[2] = output_buff_y[1]; output_buff_y[1] = output_buff_y[0]; output_buff_y[0] = filt_noise_y;
@@ -166,9 +155,6 @@ void updatePhantom(void) {
 				//p_sharedData->tool->desaturate(); 
 				// recalulate the forces after we shift the cursor position.
 				p_sharedData->tool->computeInteractionForces();
-				
-
-				updateCursor(); //updates the virtual cursor position
 
 				// store locally computed interaction forces
 				cVector3d computedLocalForce = p_sharedData->tool->getDeviceLocalForce();
@@ -177,20 +163,6 @@ void updatePhantom(void) {
 				p_sharedData->outputPhantomForce_Desired_X = computedLocalForce.x();
 				p_sharedData->outputPhantomForce_Desired_Y = computedLocalForce.y();
 				p_sharedData->outputPhantomForce_Desired_Z = computedLocalForce.z();
-
-				// get INPUT PHANTOM position and velocity vectors
-                p_sharedData->p_input_Phantom->getPosition(input_pos);
-                p_sharedData->p_input_Phantom->getLinearVelocity(input_vel);
-
-                //store position values into respective variable in sharedData structure
-				p_sharedData->inputPhantomPosX = input_pos.x();
-				p_sharedData->inputPhantomPosY = input_pos.y();
-				p_sharedData->inputPhantomPosZ = input_pos.z();
-
-				// store velocity values into respective vars in sharedData structure
-                p_sharedData->inputPhantomVelX = input_vel.x();
-				p_sharedData->inputPhantomVelY = input_vel.y();
-				p_sharedData->inputPhantomVelZ = input_vel.z();
 
 				// Checking for switch press
 				bool stat1 = false;
@@ -209,27 +181,6 @@ void updatePhantom(void) {
 				cVector3d desiredForce = cVector3d(p_sharedData->outputPhantomForce_Desired_X, p_sharedData->outputPhantomForce_Desired_Y, p_sharedData->outputPhantomForce_Desired_Z);
 				p_sharedData->p_output_Phantom->setForce(desiredForce);
 
-				// get current forces output by OUTPUT PHANTOM device
-				p_sharedData->p_output_Phantom->getForce(output_force);
-				p_sharedData->outputPhantomForce_X = output_force.x();
-				p_sharedData->outputPhantomForce_Y = output_force.y();
-				p_sharedData->outputPhantomForce_Z = output_force.z();
-
-				// get OUTPUT PHANTOM position and velocity vectors
-                p_sharedData->p_output_Phantom->getPosition(output_pos);
-                p_sharedData->p_output_Phantom->getLinearVelocity(output_vel);
-
-				 //store position values into respective variable in sharedData structure
-				p_sharedData->outputPhantomPosX = output_pos.x();
-				p_sharedData->outputPhantomPosY = output_pos.y();
-				p_sharedData->outputPhantomPosZ = output_pos.z();
-
-				// store velocity values into respective vars in sharedData structure
-                p_sharedData->outputPhantomVelX = output_vel.x();
-				p_sharedData->outputPhantomVelY = output_vel.y();
-				p_sharedData->outputPhantomVelZ = output_vel.z();
-
-
 			}
             // update frequency counter
             p_sharedData->phantomFreqCounter.signal(1);
@@ -245,29 +196,7 @@ void updatePhantom(void) {
 
 }
 
-void updateCursor(void) {
-	// position-position mapping between input phantom and virtual cursor
-	
-	
-	//This code segment maps cursor position to the "goal sphere"
-	/*p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
-	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
-	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();*/
-	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceGlobalPos().y();
-	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceGlobalPos().z();
-	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceGlobalPos().x();
 
-	/*
-	//This code segment maps cursor position to the "proxy sphere"
-	p_sharedData->cursorPosX = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().x();
-	p_sharedData->cursorPosY = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().y();
-	p_sharedData->cursorPosZ = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().z();
-	*/
-
-	// update cursor position
-	//p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
-	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
-}
 
 // Filter Function Third Order
 /*
