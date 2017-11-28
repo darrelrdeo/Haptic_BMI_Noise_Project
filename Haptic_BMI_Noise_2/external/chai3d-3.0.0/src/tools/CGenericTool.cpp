@@ -694,7 +694,7 @@ cVector3d cGenericTool::getDeviceLocalForce(void) {
 }
 
 //==============================================================================
-void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
+void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z,bool noise_toggle)
 {
 	// check if device is available
     if ((m_hapticDevice == nullptr) || (!m_enabled)) { return; }
@@ -763,7 +763,7 @@ void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
     m_deviceLocalRot = deviceRot; 
 
 	// we check our saturation condition and desaturate the position if needed
-	desaturate();
+	desaturate(noise_toggle);
 
 	//inject noise
 	m_deviceGlobalPos = m_deviceGlobalPos+m_workspaceScaleFactor*noise_vector;
@@ -784,14 +784,27 @@ void cGenericTool::updatePoseNoisy(float noise_x,float noise_y,float noise_z)
 
 //--------------------------------------------------------------------------------------
 
-void cGenericTool::desaturate()
+void cGenericTool::desaturate(bool noise_toggle)
 {	
-	
 
-	//get positions of goal_position and proxy position
+
+	//get positions of goal_position
 	cVector3d goal_pos = m_deviceGlobalPos;
-	cVector3d proxy_pos = m_hapticPoints[0]->m_algorithmFingerProxy->computeProxy(m_deviceGlobalPos);
-	//cVector3d proxy_pos =m_hapticPoints[0]->getLocalPosProxy();
+	
+	//get proxy position
+	cVector3d proxy_pos; 
+	proxy_pos.zero();
+
+	/*Desaturation must be done on the goal-proxy pair of the pure version of the latest device position.
+	The computeInteraction() forces algorithm recalculates the proxy position based on the noisy signal to find the force to exert
+	So we need to perform a calculation of the proxy of the original signal and use that to desaturate first.
+	The double calculation of the proxy yields a somewhat unstable result, but that is masked by the noise
+	In the no noise desaturation case, this instability is not masked but we can use the previous proxy position because there is no noise*/
+
+	if (noise_toggle)
+		proxy_pos = m_hapticPoints[0]->m_algorithmFingerProxy->computeProxy(m_deviceGlobalPos);
+	else
+		proxy_pos =m_hapticPoints[0]->getLocalPosProxy();
 
 	cVector3d v, v_hat; //goal-proxy distance vector, and its unit vector
 	cVector3d v_sat; // saturated goal-proxy vector
@@ -801,7 +814,7 @@ void cGenericTool::desaturate()
 
 	v.normalizer(v_hat); // find unit vector of v and store it in v_hat
 
-	//note: we can pull the average material stiffness from the collision events and use that to as k_mat
+	//note: we can pull the average material stiffness from the collision events and use that as k_mat
 
     double stiffness = 0.0;
 	int coll_num = m_hapticPoints[0]->getNumCollisionEvents();
@@ -826,9 +839,10 @@ void cGenericTool::desaturate()
 
 	//printf("dmax %f stiffness %f \n", f_max, stiffness);
 	
-	cVector3d error;
+	/*
+	cVector3d error; //= cVector3d(1,1,1);
 	error.zero();
-	v_hat.mulr(0.01,error);
+	v_hat.mulr(0.01,error);*/
 
 	// note to add conditional to check if we are not in saturation zone, only desaturate if needed!
 	
@@ -836,7 +850,7 @@ void cGenericTool::desaturate()
 	if(v.length()>v_sat.length())
 	{
 		v.subr(v_sat,v_adj);
-		v_adj.add(error);
+		//v_adj.add(error);
 		m_deviceGlobalPos.sub(v_adj);
 	}
 

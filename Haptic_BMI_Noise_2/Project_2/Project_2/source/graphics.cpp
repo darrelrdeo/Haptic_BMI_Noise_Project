@@ -139,8 +139,8 @@ void initGraphics(int argc, char* argv[]) {
 	p_sharedData->tool->setHapticDevice(p_sharedData->p_input_Phantom);
 	p_sharedData->tool->setWorkspaceRadius(WORKSPACE_RADIUS);
 	p_sharedData->tool->setRadius(CURSOR_SIZE);
-	p_sharedData->tool->m_material->setGreenChartreuse();
-	p_sharedData->tool->setShowContactPoints(true,false); //show the actual position and not the god particle
+	//p_sharedData->tool->m_material->setGreenChartreuse();
+	p_sharedData->tool->setShowContactPoints(false,false); //show the actual position and not the god particle
 	p_sharedData->tool->m_hapticPoint->m_sphereProxy->m_material->setGreenChartreuse();
 
 	//create virtual cursor that shadows the haptic tool

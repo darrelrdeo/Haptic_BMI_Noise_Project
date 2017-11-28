@@ -487,11 +487,18 @@ void initHolePos()
 void updateCursor(void) {
 	// position-position mapping between input phantom and virtual cursor
 	
+	//This code segment maps cursor position to non-noisy device position
+	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
 	
+	
+	/*
 	//This code segment maps cursor position to the "goal sphere"
 	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceGlobalPos().y();
 	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceGlobalPos().z();
 	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceGlobalPos().x();
+	*/
 
 	/*
 	//This code segment maps cursor position to the "proxy sphere"
@@ -516,6 +523,6 @@ void updateCursor(void) {
 	p_sharedData->cursorPosZ_OneAgo = p_sharedData->cursorPosZ;
 
 	// update cursor position
-	//p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
-	p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+	p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+	//p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
 }

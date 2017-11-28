@@ -82,7 +82,7 @@ void updatePhantom(void) {
 	// check whether the simulation is running
     while(p_sharedData->simulationRunning) {
 		
-		if(p_sharedData->m_noiseLoopTimer.timeoutOccurred())
+		if(p_sharedData->m_noiseLoopTimer.timeoutOccurred() && p_sharedData->noise_toggle==true)
 		{
 			p_sharedData->m_noiseLoopTimer.stop();
 
@@ -124,6 +124,13 @@ void updatePhantom(void) {
 				p_sharedData->m_noiseLoopTimer.start(1);
 		}
 
+		if (p_sharedData->noise_toggle==false)
+			{
+				filt_noise_x = 0;
+				filt_noise_y = 0;
+				filt_noise_z = 0;
+			}
+
 		// run loop only if phantomLoopTimer timeout has occurred
         if (p_sharedData->m_phantomLoopTimer.timeoutOccurred()) {
 
@@ -142,13 +149,13 @@ void updatePhantom(void) {
             if (p_sharedData->input_device == INPUT_PHANTOM) {
 				
 				
-
-
+				p_sharedData->tool->updatePoseNoisy(filt_noise_x,filt_noise_y,filt_noise_z,p_sharedData->noise_toggle);
+				/*
 				// Inject filtered noise and update tool position
 				if (p_sharedData->noise_toggle)
 					{p_sharedData->tool->updatePoseNoisy(filt_noise_x,filt_noise_y,filt_noise_z);}
 				else
-					{p_sharedData->tool->updatePose();}
+					{p_sharedData->tool->updatePose();}*/
 
 				// once we know the proxy-goal vector we can check for saturation,
 				// then we can force the cursor position back 

@@ -38,9 +38,9 @@ using namespace std;
 
 // Loop rate parameters
 #define LOOP_TIME 0.001  // for regulating thread loop rates (sec) (1Khz)
-#define NOISE_TIME 0.01  // regulates the noise generation rate 
+#define NOISE_TIME 0.02  // regulates the noise generation rate 
 // Graphics
-#define CURSOR_SIZE 0.003 // cursor radius
+#define CURSOR_SIZE 0.006 // cursor radius
 #define OBJECT_SCALE_FACTOR 3
 #define WORKSPACE_RADIUS 0.5
 #define VIRTUAL_CURSOR_VPOS 0.11
@@ -49,7 +49,7 @@ using namespace std;
 #define MESH_POSZ 0.0
 
 // Noise Generation
-#define SIGMA1 0.005 //another good one to try is 0.001
+#define SIGMA1 0.0025 //another good one to try is 0.001
 #define SIGMA2 0.001
 
 /*
@@ -75,7 +75,7 @@ using namespace std;
 
 // Material Parameters
 #define FRICTION_MU 0.3 //Mu value
-#define T_STIFF_MULT 0.75 //Tissue stiffness multiplier
+#define T_STIFF_MULT 0.9 //Tissue stiffness multiplier
 
 ////////// SAVE DATA STRUCTURE 
 typedef struct {
