@@ -201,15 +201,56 @@ void initGraphics(int argc, char* argv[]) {
 	//-------------------------------------------------------------------------------------------------------
 
 	//Generate mesh objects different hole configs
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_n40/Tissue_n40_n20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[0], "../../bin/resources/X_p40/Tissue_p40_p40.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[1], "../../bin/resources/X_n20/Tissue_n20_p40.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[1], "../../bin/resources/X_p40/Tissue_p40_p0.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[2], "../../bin/resources/X_p0/Tissue_p0_n20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[2], "../../bin/resources/X_p40/Tissue_p40_n40.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[3], "../../bin/resources/X_p20/Tissue_p20_p20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[3], "../../bin/resources/X_p20/Tissue_p20_p40.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
-	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[4], "../../bin/resources/X_p40/Tissue_p40_n20.obj",
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[4], "../../bin/resources/X_p20/Tissue_p20_p20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[5], "../../bin/resources/X_p20/Tissue_p20_p0.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[6], "../../bin/resources/X_p20/Tissue_p20_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[7], "../../bin/resources/X_p20/Tissue_p20_n40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[8], "../../bin/resources/X_p0/Tissue_p0_p40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[9], "../../bin/resources/X_p0/Tissue_p0_p20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[10], "../../bin/resources/X_p0/Tissue_p0_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[11], "../../bin/resources/X_p0/Tissue_p0_n40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[12], "../../bin/resources/X_n20/Tissue_n20_p40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[13], "../../bin/resources/X_n20/Tissue_n20_p20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[14], "../../bin/resources/X_n20/Tissue_n20_p0.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[15], "../../bin/resources/X_n20/Tissue_n20_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[16], "../../bin/resources/X_n20/Tissue_n20_n40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[17], "../../bin/resources/X_n40/Tissue_n40_p40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[18], "../../bin/resources/X_n40/Tissue_n40_p0.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[19], "../../bin/resources/X_n40/Tissue_n40_n40.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	//training holes
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[20], "../../bin/resources/X_p0/Tissue_p0_p0.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[21], "../../bin/resources/X_p40/Tissue_p40_p20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[22], "../../bin/resources/X_p40/Tissue_p40_n20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[23], "../../bin/resources/X_n40/Tissue_n40_p20.obj",
+						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
+	CreateAndFillMeshVHole(p_sharedData->p_vholeSurface[24], "../../bin/resources/X_n40/Tissue_n40_n20.obj",
 						cVector3d(0, 0, 0.003), objectMaxStiffness*T_STIFF_MULT,true);
 
 	//Generate mesh for the cover

@@ -51,9 +51,9 @@ void setup(void) {
 	p_sharedData->b[0] = 0.256915601248463;	p_sharedData->b[1] = 0.77074680374539;
 	p_sharedData->b[2] = p_sharedData->b[1]; p_sharedData->b[3] = p_sharedData->b[0];
 	
-	p_sharedData->cutoff_freq1 = "15hz at 100hz sampling";
-	p_sharedData->a1[0] = -1.16191748367173;	p_sharedData->a1[1] = 0.695942755789651;	p_sharedData->a1[2] = -0.137761301259893;
-	p_sharedData->b1[0] = 0.0495329963572532;	p_sharedData->b1[1] = 0.14859898907176;
+	p_sharedData->cutoff_freq1 = "5hz at 50hz sampling";
+	p_sharedData->a1[0] = -1.76004188034317;	p_sharedData->a1[1] = 1.18289326203783;	p_sharedData->a1[2] = -0.278059917634546;
+	p_sharedData->b1[0] = 0.0180989330075144;	p_sharedData->b1[1] = 0.0542967990225433;
 	p_sharedData->b1[2] = p_sharedData->b1[1]; p_sharedData->b1[3] = p_sharedData->b[0];
 
 	p_sharedData->current_filter_setting = p_sharedData->cutoff_freq;

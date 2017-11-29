@@ -150,19 +150,20 @@ void updatePhantom(void) {
 				
 				
 				p_sharedData->tool->updatePoseNoisy(filt_noise_x,filt_noise_y,filt_noise_z,p_sharedData->noise_toggle);
+
 				/*
 				// Inject filtered noise and update tool position
 				if (p_sharedData->noise_toggle)
 					{p_sharedData->tool->updatePoseNoisy(filt_noise_x,filt_noise_y,filt_noise_z);}
 				else
-					{p_sharedData->tool->updatePose();}*/
+					{p_sharedData->tool->updatePose();}
+				*/
 
-				// once we know the proxy-goal vector we can check for saturation,
-				// then we can force the cursor position back 
-				//p_sharedData->tool->desaturate(); 
+				
+
 				// recalulate the forces after we shift the cursor position.
 				p_sharedData->tool->computeInteractionForces();
-
+				updateCursor();
 				// store locally computed interaction forces
 				cVector3d computedLocalForce = p_sharedData->tool->getDeviceLocalForce();
 
@@ -203,7 +204,34 @@ void updatePhantom(void) {
 
 }
 
+void updateCursor(void) {
+	// position-position mapping between input phantom and virtual cursor
 
+	/*
+	//This code segment maps cursor position to non-noisy device position
+	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceLocalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceLocalPos().z();
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceLocalPos().x();
+	*/
+
+	
+	//This code segment maps cursor position to the "goal sphere"
+	p_sharedData->cursorPosY = p_sharedData->tool->getDeviceGlobalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->getDeviceGlobalPos().z();
+	p_sharedData->cursorPosX = p_sharedData->tool->getDeviceGlobalPos().x();
+	
+
+	/*
+	//This code segment maps cursor position to the "proxy sphere"
+	p_sharedData->cursorPosX = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().x();
+	p_sharedData->cursorPosY = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().y();
+	p_sharedData->cursorPosZ = p_sharedData->tool->m_hapticPoint->m_sphereProxy->getLocalPos().z();
+	*/
+
+	// update cursor position
+	p_sharedData->vCursor->setLocalPos( cVector3d(VIRTUAL_CURSOR_VPOS,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+	//p_sharedData->vCursor->setLocalPos( cVector3d(p_sharedData->cursorPosX,p_sharedData->cursorPosY,p_sharedData->cursorPosZ) );
+}
 
 // Filter Function Third Order
 /*

@@ -190,7 +190,7 @@ typedef struct {
 	// Mesh Objects
 	cMultiMesh* p_vholeCasing;
 	cMultiMesh* p_vholeCover;
-	cMultiMesh* p_vholeSurface[5];
+	cMultiMesh* p_vholeSurface[24];
 
 	// state machine params
 	int experimentStateNumber;
